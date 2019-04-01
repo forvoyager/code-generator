@@ -2,30 +2,21 @@ package com.xr.code.generate.model;
 
 /**
  * 字段信息
- * Created by yangchangyan@yijiedai.com on 2019-01-31 17:28.
+ * Created by forvoyager@outlook.com on 2019-01-31 17:28.
  */
 public class ColumnInfo {
+  /**
+   * 字段名称
+   */
   private String name;
   /**
    * 备注
    */
   private String comment;
   /**
-   * 字段类型
-   *
-   * @see java.sql.Types
-   */
-  private int type;
-  /**
    * java类型
    */
   private Class javaType;
-
-  /**
-   * java类型
-   */
-  private String javaTypeName;
-
   /**
    * 是否是主键
    */
@@ -35,47 +26,35 @@ public class ColumnInfo {
     return name;
   }
 
-  public void setName(String name) {
+  public ColumnInfo setName(String name) {
     this.name = name;
+    return this;
   }
 
   public String getComment() {
     return comment;
   }
 
-  public void setComment(String comment) {
+  public ColumnInfo setComment(String comment) {
     this.comment = comment;
-  }
-
-  public int getType() {
-    return type;
-  }
-
-  public void setType(int type) {
-    this.type = type;
+    return this;
   }
 
   public Class getJavaType() {
     return javaType;
   }
 
-  public void setJavaType(Class javaType) {
+  public ColumnInfo setJavaType(Class javaType) {
     this.javaType = javaType;
-  }
-
-  public String getJavaTypeName() {
-    return javaTypeName;
-  }
-
-  public void setJavaTypeName(String javaTypeName) {
-    this.javaTypeName = javaTypeName;
+    return this;
   }
 
   public boolean isPrimary() {
     return primary;
   }
 
-  public void setPrimary(boolean primary) {
+  public ColumnInfo setPrimary(boolean primary) {
     this.primary = primary;
+    return this;
   }
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * 表信息
- * Created by yangchangyan@yijiedai.com on 2019-01-31 17:25.
+ * Created by forvoyager@outlook.com on 2019-01-31 17:25.
  */
 public class TableInfo {
   private String tableName;
@@ -19,49 +19,54 @@ public class TableInfo {
   /**
    * 字段列表
    */
-  private List<ColumnInfo> fieldModelList;
+  private List<ColumnInfo> columnList;
   /**
    * 主键字段
    */
-  private ColumnInfo primaryColumn;
+  private String primaryColumn;
 
   public String getTableName() {
     return tableName;
   }
 
-  public void setTableName(String tableName) {
+  public TableInfo setTableName(String tableName) {
     this.tableName = tableName;
+    return this;
   }
 
   public String getName() {
     return name;
   }
 
-  public void setName(String name) {
+  public TableInfo setName(String name) {
     this.name = name;
+    return this;
   }
 
   public String getComments() {
     return comments;
   }
 
-  public void setComments(String comments) {
+  public TableInfo setComments(String comments) {
     this.comments = comments;
+    return this;
   }
 
-  public List<ColumnInfo> getFieldModelList() {
-    return fieldModelList;
+  public List<ColumnInfo> getColumnList() {
+    return columnList;
   }
 
-  public void setFieldModelList(List<ColumnInfo> fieldModelList) {
-    this.fieldModelList = fieldModelList;
+  public TableInfo setColumnList(List<ColumnInfo> columnList) {
+    this.columnList = columnList;
+    return this;
   }
 
-  public ColumnInfo getPrimaryColumn() {
+  public String getPrimaryColumn() {
     return primaryColumn;
   }
 
-  public void setPrimaryColumn(ColumnInfo primaryColumn) {
+  public TableInfo setPrimaryColumn(String primaryColumn) {
     this.primaryColumn = primaryColumn;
+    return this;
   }
 }
