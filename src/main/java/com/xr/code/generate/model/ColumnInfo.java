@@ -16,7 +16,7 @@ public class ColumnInfo {
   /**
    * java类型
    */
-  private Class javaType;
+  private String javaTypeName;
   /**
    * 是否是主键
    */
@@ -40,12 +40,12 @@ public class ColumnInfo {
     return this;
   }
 
-  public Class getJavaType() {
-    return javaType;
+  public String getJavaTypeName() {
+    return javaTypeName;
   }
 
-  public ColumnInfo setJavaType(Class javaType) {
-    this.javaType = javaType;
+  public ColumnInfo setJavaTypeName(String javaTypeName) {
+    this.javaTypeName = javaTypeName;
     return this;
   }
 

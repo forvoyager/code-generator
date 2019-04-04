@@ -14,7 +14,7 @@ public class CodeInfo {
   // 作者
   private String author;
   // 时间
-  private String dateTime;
+  private String time;
   // 代码存放路径
   private String outputPath;
   // 需要去掉的前缀
@@ -51,12 +51,12 @@ public class CodeInfo {
     return this;
   }
 
-  public String getDateTime() {
-    return dateTime;
+  public String getTime() {
+    return time;
   }
 
-  public CodeInfo setDateTime(String dateTime) {
-    this.dateTime = dateTime;
+  public CodeInfo setTime(String time) {
+    this.time = time;
     return this;
   }
 

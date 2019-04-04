@@ -52,7 +52,7 @@ public class CodeGenerator {
                     .setProjectName(projectName)
                     .setModuleName(moduleName)
                     .setAuthor(author)
-                    .setDateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
+                    .setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
                     .setPrefix(prefix)
                     .setOutputPath(outputPath)
             )
@@ -124,7 +124,7 @@ public class CodeGenerator {
                   new ColumnInfo()
                           .setName(column_name)
                           .setComment(remark)
-                          .setJavaType(this.jdbcTypMap.get(type))
+                          .setJavaTypeName(this.jdbcTypMap.get(type).getName())
                           .setPrimary(isPrimary)
           );
         }

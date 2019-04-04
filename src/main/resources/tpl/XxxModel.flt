@@ -1,0 +1,32 @@
+package com.xr.account.common.model;
+
+import com.xr.base.core.model.BaseModel;
+
+/**
+ * <b>description</b>：${tableInfo.comments} 模型 <br>
+ * <b>time</b>：${codeInfo.time} <br>
+ * <b>author</b>：${codeInfo.author}
+ */
+public class XxxModel extends BaseModel {
+
+    <#list tableInfo.columnList ? column>
+    public static final String ${column.name?upper_case} = "${column.name}";
+    </#list>
+
+    <#list tableInfo.columnList ? column>
+    /**
+     * ${column.comment}
+     */
+    private ${column.javaTypeName} ${column.name};
+    </#list>
+
+  <#list tableInfo.columnList ? column>
+  public ${column.javaTypeName} get${column.name}() {
+    return ${col.columnName};
+  }
+
+  public void set${column.name}(${column.javaTypeName} ${column.name}) {
+    this.${column.name} = ${column.name};
+  }
+  </#list>
+}
