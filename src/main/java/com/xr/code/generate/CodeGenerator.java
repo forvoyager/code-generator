@@ -4,6 +4,7 @@ import com.xr.code.generate.model.CodeInfo;
 import com.xr.code.generate.model.ColumnInfo;
 import com.xr.code.generate.model.DatabaseInfo;
 import com.xr.code.generate.model.TableInfo;
+import com.xr.code.generate.util.FreemarkerUtils;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -35,7 +36,7 @@ public class CodeGenerator {
     String outputPath = "./code";
 
     // 数据库配置
-    String url = "jdbc:mysql://local:3306/ms_account_db?characterEncoding=UTF-8";
+    String url = "jdbc:mysql://localhost:3306/ms_account_db?characterEncoding=UTF-8&&useInformationSchema=true";
     String driver = "com.mysql.jdbc.Driver";
     String username = "root";
     String password = "123456";
@@ -44,6 +45,7 @@ public class CodeGenerator {
 
     // 需要生成代码的表Map<tableName, comment>
     List<String> tables = new ArrayList<String>();
+    tables.add("ms_account");
 
     // 构建生成代码的数据
     new CodeGenerator()
@@ -71,8 +73,24 @@ public class CodeGenerator {
   /**
    * 生成代码
    */
-  private void generate() {
+  private void generate() throws Exception {
 
+    Map data = new HashMap();
+    data.put("author", this.codeInfo.getAuthor());
+    data.put("time", this.codeInfo.getTime());
+
+    // 生成代码信息
+    for(TableInfo table : tableInfos){
+      data.put("comments", table.getComments());
+
+      // 生成Model信息
+      data.put("moduleName", table.getName());
+      data.put("fieldList", table.getColumnList());
+      String code = FreemarkerUtils.getFtlToString("XxxModel", data);
+      System.out.println(code);
+    }
+
+    // 生成代码文件
   }
 
   private CodeGenerator tableInfo(List<String> tables) throws SQLException, ClassNotFoundException {
@@ -90,6 +108,12 @@ public class CodeGenerator {
       for(String table : tables){
         // 获取表的主键PK
         String pk = null;
+        String comment = "";
+
+        ResultSet tbrs = dbmd.getTables(conn.getCatalog(), "%", table, new String[] { "TABLE" });
+        while (tbrs.next()){
+          comment = tbrs.getString("REMARKS");
+        }
         ResultSet pkrs = dbmd.getPrimaryKeys(conn.getCatalog(), null, table);
         while (pkrs.next()){
           pk = pkrs.getString(4);
@@ -122,9 +146,9 @@ public class CodeGenerator {
 
           columns.add(
                   new ColumnInfo()
-                          .setName(column_name)
+                          .setName(upperFirst(column_name))
                           .setComment(remark)
-                          .setJavaTypeName(this.jdbcTypMap.get(type).getName())
+                          .setJavaTypeName(this.jdbcTypMap.get(type).getSimpleName())
                           .setPrimary(isPrimary)
           );
         }
@@ -134,8 +158,8 @@ public class CodeGenerator {
 
         tableInfo = new TableInfo();
         tableInfo.setTableName(table);
-        tableInfo.setName(table.replace(this.codeInfo.getPrefix(), ""));
-        tableInfo.setComments(""); // TODO: 2019/4/1
+        tableInfo.setName(upperFirst(table.replace(this.codeInfo.getPrefix(), "")));
+        tableInfo.setComments(comment);
         tableInfo.setColumnList(columns);
         tableInfo.setPrimaryColumn(pk);
         tableInfos.add(tableInfo);
@@ -184,6 +208,12 @@ public class CodeGenerator {
   public CodeGenerator setTableInfos(List<TableInfo> tableInfos) {
     this.tableInfos = tableInfos;
     return this;
+  }
+
+  private String upperFirst(String str){
+    char[] chars = str.toCharArray();
+    chars[0] = Character.toUpperCase(chars[0]);
+    return String.valueOf(chars);
   }
 
   private Connection getConnection() throws ClassNotFoundException, SQLException {
