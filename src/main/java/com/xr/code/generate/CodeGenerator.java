@@ -17,8 +17,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 代码生成器
@@ -28,6 +30,8 @@ public class CodeGenerator {
   public static void main(String[] args) throws Exception {
     // 项目名称
     String projectName = "micro_service";
+    // 基础包名
+    String basePackageName = "com.xr";
     // 模块名称
     String moduleName = "account";
     // 作者
@@ -52,6 +56,7 @@ public class CodeGenerator {
             .setCodeInfo(
                     new CodeInfo()
                     .setProjectName(projectName)
+                    .setBasePackageName(basePackageName)
                     .setModuleName(moduleName)
                     .setAuthor(author)
                     .setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
@@ -65,6 +70,10 @@ public class CodeGenerator {
                     .setUsername(username)
                     .setPassword(password)
             )
+            // base model中存在，其他model中不需要生成
+            .addSkipField("create_time")
+            .addSkipField("update_time")
+            .addSkipField("version")
             .tableInfo(tables)
             .generate();
 
@@ -78,15 +87,24 @@ public class CodeGenerator {
     Map data = new HashMap();
     data.put("author", this.codeInfo.getAuthor());
     data.put("time", this.codeInfo.getTime());
+    data.put("basePackageName", this.codeInfo.getBasePackageName());
+    data.put("moduleName", this.codeInfo.getModuleName());
 
     // 生成代码信息
+    String code = null;
     for(TableInfo table : tableInfos){
       data.put("comments", table.getComments());
+      data.put("modelName", table.getName());
 
       // 生成Model信息
-      data.put("moduleName", table.getName());
       data.put("fieldList", table.getColumnList());
-      String code = FreemarkerUtils.getFtlToString("XxxModel", data);
+      code = FreemarkerUtils.getFtlToString("XxxModel", data);
+      System.out.println(code);
+
+      // 生成Model信息
+      data.put("primaryField", table.getPrimaryColumn());
+      data.put("primaryFieldType", table.getPrimaryType());
+      code = FreemarkerUtils.getFtlToString("IXxxController", data);
       System.out.println(code);
     }
 
@@ -108,6 +126,7 @@ public class CodeGenerator {
       for(String table : tables){
         // 获取表的主键PK
         String pk = null;
+        String pkType = null;
         String comment = "";
 
         ResultSet tbrs = dbmd.getTables(conn.getCatalog(), "%", table, new String[] { "TABLE" });
@@ -126,6 +145,7 @@ public class CodeGenerator {
           // 是否是主键，默认不是
           boolean isPrimary = false;
           String column_name = rs.getString("COLUMN_NAME");
+          if(skipField.contains(column_name)){ continue; }
           String remark = rs.getString("REMARKS");
 
           /**
@@ -143,10 +163,13 @@ public class CodeGenerator {
 
           // sql type
           int type = rs.getInt("DATA_TYPE");
+          if(isPrimary){
+            pkType = this.jdbcTypMap.get(type).getSimpleName();
+          }
 
           columns.add(
                   new ColumnInfo()
-                          .setName(upperFirst(column_name))
+                          .setName(column_name)
                           .setComment(remark)
                           .setJavaTypeName(this.jdbcTypMap.get(type).getSimpleName())
                           .setPrimary(isPrimary)
@@ -158,10 +181,11 @@ public class CodeGenerator {
 
         tableInfo = new TableInfo();
         tableInfo.setTableName(table);
-        tableInfo.setName(upperFirst(table.replace(this.codeInfo.getPrefix(), "")));
+        tableInfo.setName(table.replace(this.codeInfo.getPrefix(), ""));
         tableInfo.setComments(comment);
         tableInfo.setColumnList(columns);
         tableInfo.setPrimaryColumn(pk);
+        tableInfo.setPrimaryType(pkType);
         tableInfos.add(tableInfo);
       }
     } finally {
@@ -207,6 +231,11 @@ public class CodeGenerator {
 
   public CodeGenerator setTableInfos(List<TableInfo> tableInfos) {
     this.tableInfos = tableInfos;
+    return this;
+  }
+
+  public CodeGenerator addSkipField(String field) {
+    this.skipField.add(field);
     return this;
   }
 
@@ -262,4 +291,8 @@ public class CodeGenerator {
    * 表结构信息
    */
   private List<TableInfo> tableInfos;
+  /**
+   * base model中存在，其他model中不需要生成
+   */
+  private Set<String> skipField = new HashSet<String>();
 }

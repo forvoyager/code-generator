@@ -1,4 +1,4 @@
-package com.xr.account.common.model;
+package ${basePackageName}.${moduleName}.common.model;
 
 import com.xr.base.core.model.BaseModel;
 
@@ -7,7 +7,7 @@ import com.xr.base.core.model.BaseModel;
  * <b>author</b>：${author}
  * <b>description</b>：${comments} 模型 <br>
  */
-public class ${moduleName}Model extends BaseModel {
+public class ${modelName?cap_first}Model extends BaseModel {
 
   <#list fieldList as field>
   public static final String ${field.name?upper_case} = "${field.name}";
@@ -17,15 +17,15 @@ public class ${moduleName}Model extends BaseModel {
   /**
    * ${field.comment}
    */
-  private ${field.javaTypeName} ${field.name?lower_case};
+  private ${field.javaTypeName} ${field.name};
   </#list>
 
   <#list fieldList as field>
-  public ${field.javaTypeName} get${field.name}() {
-    return this.${field.name?lower_case};
+  public ${field.javaTypeName} get${field.name?cap_first}() {
+    return this.${field.name};
   }
-  public ${moduleName}Model set${field.name}(${field.javaTypeName} ${field.name?lower_case}) {
-    this.${field.name?lower_case} = ${field.name?lower_case};
+  public ${modelName?cap_first}Model set${field.name?cap_first}(${field.javaTypeName} ${field.name}) {
+    this.${field.name} = ${field.name};
     return this;
   }
 

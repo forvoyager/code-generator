@@ -24,6 +24,10 @@ public class TableInfo {
    * 主键字段
    */
   private String primaryColumn;
+  /**
+   * 主键字段类型
+   */
+  private String primaryType;
 
   public String getTableName() {
     return tableName;
@@ -67,6 +71,15 @@ public class TableInfo {
 
   public TableInfo setPrimaryColumn(String primaryColumn) {
     this.primaryColumn = primaryColumn;
+    return this;
+  }
+
+  public String getPrimaryType() {
+    return primaryType;
+  }
+
+  public TableInfo setPrimaryType(String primaryType) {
+    this.primaryType = primaryType;
     return this;
   }
 }

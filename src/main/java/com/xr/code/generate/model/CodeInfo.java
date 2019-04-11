@@ -9,6 +9,8 @@ public class CodeInfo {
 
   // 项目名称
   private String projectName;
+  // 基础包名
+  String basePackageName;
   // 模块名称
   private String moduleName;
   // 作者
@@ -30,6 +32,15 @@ public class CodeInfo {
 
   public CodeInfo setProjectName(String projectName) {
     this.projectName = projectName;
+    return this;
+  }
+
+  public String getBasePackageName() {
+    return basePackageName;
+  }
+
+  public CodeInfo setBasePackageName(String basePackageName) {
+    this.basePackageName = basePackageName;
     return this;
   }
 
