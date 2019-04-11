@@ -112,6 +112,19 @@ public class CodeGenerator {
       data.put("primaryFieldType", table.getPrimaryType());
       code = FreemarkerUtils.getFtlToString("/service/XxxController", data);
       System.out.println(code);
+
+      // 生成Mapper
+      code = FreemarkerUtils.getFtlToString("/service/XxxMapper", data);
+      System.out.println(code);
+
+      // 生成Service
+      code = FreemarkerUtils.getFtlToString("/service/IXxxService", data);
+      System.out.println(code);
+
+      // 生成ServiceImpl
+      data.put("primaryField", table.getPrimaryColumn());
+      code = FreemarkerUtils.getFtlToString("/service/XxxServiceImpl", data);
+      System.out.println(code);
     }
 
     // 生成代码文件

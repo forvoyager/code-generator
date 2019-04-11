@@ -3,9 +3,9 @@ package ${basePackageName}.${moduleName}.common.model;
 import com.xr.base.core.model.BaseModel;
 
 /**
- * <b>time</b>：${time} <br>
- * <b>author</b>：${author}
- * <b>description</b>：${comments} 模型 <br>
+ * <b>time</b>: ${time} <br>
+ * <b>author</b>: ${author}
+ * <b>description</b>: ${comments} 模型 <br>
  */
 public class ${modelName?cap_first}Model extends BaseModel {
 

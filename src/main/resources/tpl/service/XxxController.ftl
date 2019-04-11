@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <b>time</b>：${time} <br>
- * <b>author</b>：${author}
- * <b>description</b>：${comments} HTTP服务 <br>
+ * <b>time</b>: ${time} <br>
+ * <b>author</b>: ${author}
+ * <b>description</b>: ${comments} HTTP服务 <br>
  */
 @RestController
 public class ${modelName?cap_first}Controller implements I${modelName?cap_first}Controller {

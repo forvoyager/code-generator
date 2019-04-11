@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <b>time</b>：${time} <br>
- * <b>author</b>：${author}
- * <b>description</b>：${comments} HTTP接口 <br>
+ * <b>time</b>: ${time} <br>
+ * <b>author</b>: ${author}
+ * <b>description</b>: ${comments} HTTP接口 <br>
  */
 public interface I${modelName?cap_first}Controller {
 
