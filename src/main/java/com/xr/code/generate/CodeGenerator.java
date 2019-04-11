@@ -96,15 +96,21 @@ public class CodeGenerator {
       data.put("comments", table.getComments());
       data.put("modelName", table.getName());
 
-      // 生成Model信息
+      // 生成Model
       data.put("fieldList", table.getColumnList());
-      code = FreemarkerUtils.getFtlToString("XxxModel", data);
+      code = FreemarkerUtils.getFtlToString("/common/XxxModel", data);
       System.out.println(code);
 
-      // 生成Model信息
+      // 生成IController
       data.put("primaryField", table.getPrimaryColumn());
       data.put("primaryFieldType", table.getPrimaryType());
-      code = FreemarkerUtils.getFtlToString("IXxxController", data);
+      code = FreemarkerUtils.getFtlToString("/common/IXxxController", data);
+      System.out.println(code);
+
+      // 生成Controller
+      data.put("primaryField", table.getPrimaryColumn());
+      data.put("primaryFieldType", table.getPrimaryType());
+      code = FreemarkerUtils.getFtlToString("/service/XxxController", data);
       System.out.println(code);
     }
 

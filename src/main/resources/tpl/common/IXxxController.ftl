@@ -73,7 +73,7 @@ public interface I${modelName?cap_first}Controller {
    * @return Integer 删除的行数
    */
   @RequestMapping("/${modelName}/delete")
-  ResultDto<Integer> deleteByMap(@RequestBody Map<String, Object> condition) throws Exception;
+  ResultDto<Long> deleteByMap(@RequestBody Map<String, Object> condition) throws Exception;
 
   /**
    * <p>
@@ -84,7 +84,7 @@ public interface I${modelName?cap_first}Controller {
    * @return ${modelName?cap_first}Model 更新的行数
    */
   @RequestMapping("/${modelName}/update/model")
-  ResultDto<Integer> update(@RequestBody ${modelName?cap_first}Model entity) throws Exception;
+  ResultDto<Long> update(@RequestBody ${modelName?cap_first}Model entity) throws Exception;
 
   /**
    * <p>
@@ -95,7 +95,7 @@ public interface I${modelName?cap_first}Controller {
    * @return Integer 更新的行数
    */
   @RequestMapping("/${modelName}/update/map")
-  ResultDto<Integer> updateByMap(@RequestBody Map<String, Object> columnMap) throws Exception;
+  ResultDto<Long> updateByMap(@RequestBody Map<String, Object> columnMap) throws Exception;
 
   /**
    * <p>
