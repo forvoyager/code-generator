@@ -97,7 +97,7 @@ public class CodeGenerator {
       data.put("modelName", table.getName());
 
       // 生成Model
-      data.put("fieldList", table.getColumnList());
+      data.put("fieldList", removeSkipField(table.getColumnList()));
       code = FreemarkerUtils.getFtlToString("/common/XxxModel", data);
       System.out.println(code);
 
@@ -113,10 +113,6 @@ public class CodeGenerator {
       code = FreemarkerUtils.getFtlToString("/service/XxxController", data);
       System.out.println(code);
 
-      // 生成Mapper
-      code = FreemarkerUtils.getFtlToString("/service/XxxMapper", data);
-      System.out.println(code);
-
       // 生成Service
       code = FreemarkerUtils.getFtlToString("/service/IXxxService", data);
       System.out.println(code);
@@ -124,6 +120,18 @@ public class CodeGenerator {
       // 生成ServiceImpl
       data.put("primaryField", table.getPrimaryColumn());
       code = FreemarkerUtils.getFtlToString("/service/XxxServiceImpl", data);
+      System.out.println(code);
+
+      // 生成Mapper
+      code = FreemarkerUtils.getFtlToString("/service/XxxMapper", data);
+      System.out.println(code);
+
+      // 生成mapper xml
+      data.put("tableName", table.getTableName());
+      data.put("fieldList", table.getColumnList());
+      data.put("primaryField", table.getPrimaryColumn());
+      data.put("primaryFieldType", table.getPrimaryType());
+      code = FreemarkerUtils.getFtlToString("/service/xxx.xml", data);
       System.out.println(code);
     }
 
@@ -164,7 +172,6 @@ public class CodeGenerator {
           // 是否是主键，默认不是
           boolean isPrimary = false;
           String column_name = rs.getString("COLUMN_NAME");
-          if(skipField.contains(column_name)){ continue; }
           String remark = rs.getString("REMARKS");
 
           /**
@@ -258,10 +265,14 @@ public class CodeGenerator {
     return this;
   }
 
-  private String upperFirst(String str){
-    char[] chars = str.toCharArray();
-    chars[0] = Character.toUpperCase(chars[0]);
-    return String.valueOf(chars);
+  public List<ColumnInfo> removeSkipField(List<ColumnInfo> columns){
+    List<ColumnInfo> list = new ArrayList<ColumnInfo>();
+    for(ColumnInfo ci : columns){
+      if(skipField.contains(ci.getName())){ continue; }
+      list.add(ci);
+    }
+
+    return list;
   }
 
   private Connection getConnection() throws ClassNotFoundException, SQLException {
