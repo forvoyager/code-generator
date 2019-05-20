@@ -2,7 +2,7 @@ package ${basePackageName}.${moduleName}.controller;
 
 import ${basePackageName}.${moduleName}.common.controller.I${modelName?cap_first}Controller;
 import ${basePackageName}.${moduleName}.common.model.${modelName?cap_first}Model;
-import ${basePackageName}.${moduleName}.service.I${modelName}Service;
+import ${basePackageName}.${moduleName}.service.I${modelName?cap_first}Service;
 import com.xr.base.core.dto.ResultDto;
 import com.xr.base.core.enums.Cluster;
 import com.xr.base.core.page.PageData;
@@ -83,7 +83,7 @@ public class ${modelName?cap_first}Controller implements I${modelName?cap_first}
   }
 
   @Override
-  public ResultDto<Map<Integer, ${modelName?cap_first}Model>> selectMap(@RequestBody Map<String, Object> condition, @PathVariable("master") Cluster master) throws Exception {
+  public ResultDto<Map<${primaryFieldType}, ${modelName?cap_first}Model>> selectMap(@RequestBody Map<String, Object> condition, @PathVariable("master") Cluster master) throws Exception {
     return ResultDto.success(${modelName}Service.selectMap(condition, master));
   }
 

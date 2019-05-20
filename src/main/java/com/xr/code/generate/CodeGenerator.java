@@ -3,9 +3,12 @@ package com.xr.code.generate;
 import com.xr.code.generate.model.CodeInfo;
 import com.xr.code.generate.model.ColumnInfo;
 import com.xr.code.generate.model.DatabaseInfo;
+import com.xr.code.generate.model.FileData;
 import com.xr.code.generate.model.TableInfo;
 import com.xr.code.generate.util.FreemarkerUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -34,18 +37,20 @@ public class CodeGenerator {
     String basePackageName = "com.xr";
     // 模块名称
     String moduleName = "account";
+    // 模块名前缀
+    String modulePrefix = "ms-";
     // 作者
     String author = "forvoyager@outlook.com";
     // 代码存放路径
     String outputPath = "./code";
 
     // 数据库配置
-    String url = "jdbc:mysql://localhost:3306/ms_account_db?characterEncoding=UTF-8&&useInformationSchema=true";
+    String url = "jdbc:mysql://localhost:3306/ms_account_db?characterEncoding=UTF-8";
     String driver = "com.mysql.jdbc.Driver";
     String username = "root";
     String password = "123456";
     // 需要去掉的表前缀
-    String prefix="ms_";
+    String skipTablePrefix = "ms_";
 
     // 需要生成代码的表Map<tableName, comment>
     List<String> tables = new ArrayList<String>();
@@ -55,20 +60,21 @@ public class CodeGenerator {
     new CodeGenerator()
             .setCodeInfo(
                     new CodeInfo()
-                    .setProjectName(projectName)
-                    .setBasePackageName(basePackageName)
-                    .setModuleName(moduleName)
-                    .setAuthor(author)
-                    .setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-                    .setPrefix(prefix)
-                    .setOutputPath(outputPath)
+                            .setProjectName(projectName)
+                            .setBasePackageName(basePackageName)
+                            .setModuleName(moduleName)
+                            .setModulePrefix(modulePrefix)
+                            .setAuthor(author)
+                            .setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
+                            .setSkipTablePrefix(skipTablePrefix)
+                            .setOutputPath(outputPath)
             )
             .setDatabaseInfo(
                     new DatabaseInfo()
-                    .setUrl(url)
-                    .setDriver(driver)
-                    .setUsername(username)
-                    .setPassword(password)
+                            .setUrl(url)
+                            .setDriver(driver)
+                            .setUsername(username)
+                            .setPassword(password)
             )
             // base model中存在，其他model中不需要生成
             .addSkipField("create_time")
@@ -84,47 +90,86 @@ public class CodeGenerator {
    */
   private void generate() throws Exception {
 
+    String basePackageName = this.codeInfo.getBasePackageName();
+    String moduleName = this.codeInfo.getModuleName();
+    String modulePrefix = this.codeInfo.getModulePrefix();
+
     Map data = new HashMap();
     data.put("author", this.codeInfo.getAuthor());
     data.put("time", this.codeInfo.getTime());
-    data.put("basePackageName", this.codeInfo.getBasePackageName());
-    data.put("moduleName", this.codeInfo.getModuleName());
+    data.put("basePackageName", basePackageName);
+    data.put("moduleName", moduleName);
+
+    List<FileData> files = new ArrayList<FileData>();
 
     // 生成代码信息
     String code = null;
-    for(TableInfo table : tableInfos){
+    FileData file = null;
+    for (TableInfo table : tableInfos) {
       data.put("comments", table.getComments());
       data.put("modelName", table.getName());
 
       // 生成Model
       data.put("fieldList", removeSkipField(table.getColumnList()));
       code = FreemarkerUtils.getFtlToString("/common/XxxModel", data);
-      System.out.println(code);
+      file = new FileData();
+      file.setName(upperFirst(table.getName()) + "Model.java");
+      file.setContent(code);
+      file.setPath(String.format(XxxMODEL_PATH, modulePrefix, moduleName, basePackageName, moduleName));
+      files.add(file);
 
       // 生成IController
       data.put("primaryField", table.getPrimaryColumn());
       data.put("primaryFieldType", table.getPrimaryType());
       code = FreemarkerUtils.getFtlToString("/common/IXxxController", data);
-      System.out.println(code);
+      file = new FileData();
+      file.setName("I" + upperFirst(table.getName()) + "Controller.java");
+      file.setContent(code);
+      file.setPath(String.format(IXxxController_PATH, modulePrefix, moduleName, basePackageName, moduleName));
+      files.add(file);
 
       // 生成Controller
       data.put("primaryField", table.getPrimaryColumn());
       data.put("primaryFieldType", table.getPrimaryType());
       code = FreemarkerUtils.getFtlToString("/service/XxxController", data);
-      System.out.println(code);
+      file = new FileData();
+      file.setName(upperFirst(table.getName()) + "Controller.java");
+      file.setContent(code);
+      file.setPath(String.format(XxxController_PATH, modulePrefix, moduleName, basePackageName, moduleName));
+      files.add(file);
+
+      // 生成Client
+      code = FreemarkerUtils.getFtlToString("/client/XxxClient", data);
+      file = new FileData();
+      file.setName(upperFirst(table.getName()) + "Client.java");
+      file.setContent(code);
+      file.setPath(String.format(XxxClient_PATH, modulePrefix, moduleName, basePackageName, moduleName));
+      files.add(file);
 
       // 生成Service
       code = FreemarkerUtils.getFtlToString("/service/IXxxService", data);
-      System.out.println(code);
+      file = new FileData();
+      file.setName("I" + upperFirst(table.getName()) + "Service.java");
+      file.setContent(code);
+      file.setPath(String.format(IXxxService_PATH, modulePrefix, moduleName, basePackageName, moduleName));
+      files.add(file);
 
       // 生成ServiceImpl
       data.put("primaryField", table.getPrimaryColumn());
       code = FreemarkerUtils.getFtlToString("/service/XxxServiceImpl", data);
-      System.out.println(code);
+      file = new FileData();
+      file.setName(upperFirst(table.getName()) + "ServiceImpl.java");
+      file.setContent(code);
+      file.setPath(String.format(XxxServiceImpl_PATH, modulePrefix, moduleName, basePackageName, moduleName));
+      files.add(file);
 
       // 生成Mapper
       code = FreemarkerUtils.getFtlToString("/service/XxxMapper", data);
-      System.out.println(code);
+      file = new FileData();
+      file.setName(upperFirst(table.getName()) + "Mapper.java");
+      file.setContent(code);
+      file.setPath(String.format(XxxMapper_PATH, modulePrefix, moduleName, basePackageName, moduleName));
+      files.add(file);
 
       // 生成mapper xml
       data.put("tableName", table.getTableName());
@@ -132,10 +177,36 @@ public class CodeGenerator {
       data.put("primaryField", table.getPrimaryColumn());
       data.put("primaryFieldType", table.getPrimaryType());
       code = FreemarkerUtils.getFtlToString("/service/xxx.xml", data);
-      System.out.println(code);
+      file = new FileData();
+      file.setName(table.getName() + ".xml");
+      file.setContent(code);
+      file.setPath(String.format(XxxMapperXml_PATH, modulePrefix, moduleName));
+      files.add(file);
     }
 
     // 生成代码文件
+    File filePath = null;
+    FileOutputStream fos = null;
+    StringBuffer basePath = new StringBuffer();
+    basePath.append(this.codeInfo.getOutputPath()).append("/");
+    basePath.append(this.codeInfo.getProjectName()).append("/");
+    basePath.append(this.codeInfo.getModulePrefix());
+    basePath.append(this.codeInfo.getModuleName()).append("/");
+    String path = null;
+    for (FileData fd : files) {
+      // 创建目录接口
+      path = basePath + fd.getPath().replace(".", "/") + "/";
+      filePath = new File(path);
+      if(!filePath.exists()){
+        filePath.mkdirs();
+      }
+
+      fos = new FileOutputStream(path + fd.getName(), true);
+      fos.write(fd.getContent().getBytes("UTF-8"));
+      fos.flush();
+      fos.close();
+      System.out.println(String.format("生成%s，完成。", fd.getName()));
+    }
   }
 
   private CodeGenerator tableInfo(List<String> tables) throws SQLException, ClassNotFoundException {
@@ -150,18 +221,18 @@ public class CodeGenerator {
       // 处理所有表
       TableInfo tableInfo = null;
       this.tableInfos = new ArrayList<TableInfo>();
-      for(String table : tables){
+      for (String table : tables) {
         // 获取表的主键PK
         String pk = null;
         String pkType = null;
         String comment = "";
 
-        ResultSet tbrs = dbmd.getTables(conn.getCatalog(), "%", table, new String[] { "TABLE" });
-        while (tbrs.next()){
+        ResultSet tbrs = dbmd.getTables(conn.getCatalog(), "%", table, new String[]{"TABLE"});
+        while (tbrs.next()) {
           comment = tbrs.getString("REMARKS");
         }
         ResultSet pkrs = dbmd.getPrimaryKeys(conn.getCatalog(), null, table);
-        while (pkrs.next()){
+        while (pkrs.next()) {
           pk = pkrs.getString(4);
         }
 
@@ -180,16 +251,16 @@ public class CodeGenerator {
            * 两者都没有的，以第一列为主键，暂不考虑。
            */
           boolean isAuto = rs.getString("IS_AUTOINCREMENT").toUpperCase().equals("YES");
-          if(isAuto){
+          if (isAuto) {
             pk = column_name;
             isPrimary = true;
-          }else if(column_name.equals(pk)){
+          } else if (column_name.equals(pk)) {
             isPrimary = true;
           }
 
           // sql type
           int type = rs.getInt("DATA_TYPE");
-          if(isPrimary){
+          if (isPrimary) {
             pkType = this.jdbcTypMap.get(type).getSimpleName();
           }
 
@@ -201,13 +272,13 @@ public class CodeGenerator {
                           .setPrimary(isPrimary)
           );
         }
-        if(columns.size() == 0){
+        if (columns.size() == 0) {
           throw new RuntimeException("表中无有效字段，无法生成代码。");
         }
 
         tableInfo = new TableInfo();
         tableInfo.setTableName(table);
-        tableInfo.setName(table.replace(this.codeInfo.getPrefix(), ""));
+        tableInfo.setName(table.replace(this.codeInfo.getSkipTablePrefix(), ""));
         tableInfo.setComments(comment);
         tableInfo.setColumnList(columns);
         tableInfo.setPrimaryColumn(pk);
@@ -229,7 +300,7 @@ public class CodeGenerator {
     return this;
   }
 
-  public CodeGenerator(){
+  public CodeGenerator() {
     initTypMap();
   }
 
@@ -265,22 +336,35 @@ public class CodeGenerator {
     return this;
   }
 
-  public List<ColumnInfo> removeSkipField(List<ColumnInfo> columns){
+  public List<ColumnInfo> removeSkipField(List<ColumnInfo> columns) {
     List<ColumnInfo> list = new ArrayList<ColumnInfo>();
-    for(ColumnInfo ci : columns){
-      if(skipField.contains(ci.getName())){ continue; }
+    for (ColumnInfo ci : columns) {
+      if (skipField.contains(ci.getName())) {
+        continue;
+      }
       list.add(ci);
     }
 
     return list;
   }
 
-  private Connection getConnection() throws ClassNotFoundException, SQLException {
-    Class.forName(this.databaseInfo.getDriver());
-    return DriverManager.getConnection(this.databaseInfo.getUrl(), this.databaseInfo.getUsername(), this.databaseInfo.getPassword());
+  public String upperFirst(String str) {
+    char[] chars = str.toCharArray();
+    if (Character.isLowerCase(chars[0])) {
+      chars[0] = Character.toUpperCase(chars[0]);
+    }
+    return new String(chars);
   }
 
-  private void initTypMap(){
+  private Connection getConnection() throws ClassNotFoundException, SQLException {
+    Class.forName(this.databaseInfo.getDriver());
+    return DriverManager.getConnection(
+            this.databaseInfo.getUrl()+"&&useInformationSchema=true",
+            this.databaseInfo.getUsername(),
+            this.databaseInfo.getPassword());
+  }
+
+  private void initTypMap() {
     jdbcTypMap = new HashMap<Integer, Class>();
     jdbcTypMap.put(Types.BIGINT, Long.class);
     jdbcTypMap.put(Types.BINARY, byte[].class);
@@ -306,9 +390,9 @@ public class CodeGenerator {
     jdbcTypMap.put(Types.VARBINARY, byte[].class);
     jdbcTypMap.put(Types.VARCHAR, String.class);
   }
-  
+
   private Map<Integer, Class> jdbcTypMap;
-  
+
   /**
    * 代码基本信息
    */
@@ -325,4 +409,13 @@ public class CodeGenerator {
    * base model中存在，其他model中不需要生成
    */
   private Set<String> skipField = new HashSet<String>();
+
+  private static final String XxxMODEL_PATH = "%s%s-common/src/main/java/%s/%s/common/model";
+  private static final String IXxxController_PATH = "%s%s-common/src/main/java/%s/%s/common/controller";
+  private static final String XxxClient_PATH = "%s%s-client-starter/src/main/java/%s/%s/client";
+  private static final String XxxController_PATH = "%s%s-service/src/main/java/%s/%s/controller";
+  private static final String IXxxService_PATH = "%s%s-service/src/main/java/%s/%s/service";
+  private static final String XxxServiceImpl_PATH = "%s%s-service/src/main/java/%s/%s/service/impl";
+  private static final String XxxMapper_PATH = "%s%s-service/src/main/java/%s/%s/mapper";
+  private static final String XxxMapperXml_PATH = "%s%s-service/src/main/resources/mybatis/mapper";
 }

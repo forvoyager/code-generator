@@ -13,14 +13,16 @@ public class CodeInfo {
   String basePackageName;
   // 模块名称
   private String moduleName;
+  // 模块名前缀
+  private String modulePrefix;
   // 作者
   private String author;
   // 时间
   private String time;
   // 代码存放路径
   private String outputPath;
-  // 需要去掉的前缀
-  private String prefix;
+  // 需要去掉的表前缀
+  private String skipTablePrefix;
   // 数据库信息
   private DatabaseInfo databaseInfo;
   // 表信息
@@ -53,6 +55,15 @@ public class CodeInfo {
     return this;
   }
 
+  public String getModulePrefix() {
+    return modulePrefix;
+  }
+
+  public CodeInfo setModulePrefix(String modulePrefix) {
+    this.modulePrefix = modulePrefix;
+    return this;
+  }
+
   public String getAuthor() {
     return author;
   }
@@ -80,12 +91,12 @@ public class CodeInfo {
     return this;
   }
 
-  public String getPrefix() {
-    return prefix;
+  public String getSkipTablePrefix() {
+    return skipTablePrefix;
   }
 
-  public CodeInfo setPrefix(String prefix) {
-    this.prefix = prefix;
+  public CodeInfo setSkipTablePrefix(String skipTablePrefix) {
+    this.skipTablePrefix = skipTablePrefix;
     return this;
   }
 
