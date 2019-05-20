@@ -278,7 +278,7 @@ public class CodeGenerator {
 
         tableInfo = new TableInfo();
         tableInfo.setTableName(table);
-        tableInfo.setName(table.replace(this.codeInfo.getSkipTablePrefix(), ""));
+        tableInfo.setName(parseCamelCase(table.replace(this.codeInfo.getSkipTablePrefix(), "")));
         tableInfo.setComments(comment);
         tableInfo.setColumnList(columns);
         tableInfo.setPrimaryColumn(pk);
@@ -354,6 +354,22 @@ public class CodeGenerator {
       chars[0] = Character.toUpperCase(chars[0]);
     }
     return new String(chars);
+  }
+
+  private String parseCamelCase(String name){
+    char[] chars = name.toCharArray();
+    boolean isNextNeedUpper = false;
+    for(int i = 0;i < chars.length;i++){
+      if(isNextNeedUpper){
+        chars[i] = Character.toUpperCase(chars[i]);
+        isNextNeedUpper = false;
+      }
+      if("_".equals(String.valueOf(chars[i]))){
+        isNextNeedUpper = true;
+      }
+    }
+
+    return String.valueOf(chars).replace("_", "");
   }
 
   private Connection getConnection() throws ClassNotFoundException, SQLException {
