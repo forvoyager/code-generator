@@ -55,6 +55,7 @@ public class CodeGenerator {
     // 需要生成代码的表Map<tableName, comment>
     List<String> tables = new ArrayList<String>();
     tables.add("ms_account");
+    tables.add("ms_user_level");
 
     // 构建生成代码的数据
     new CodeGenerator()
