@@ -4,7 +4,7 @@
 目前生成的是微服务架构代码格式，如果需要MVC风格代码，忽略掉*-client-starter模块的内容即可。
 
 # 使用方法
-按照项目/模块的需要，配置好项目信息、作者信息及数据库信息，然后添加需要生成基础代码的表，直接运行即可。
+按照项目/模块的需要，配置好项目信息、作者信息及数据库信息，然后添加需要生成基础代码的表，直接运行（com.xr.code.generate.CodeGenerator）即可。
 ``` java
 // 项目名称
 String projectName = "micro_service";
