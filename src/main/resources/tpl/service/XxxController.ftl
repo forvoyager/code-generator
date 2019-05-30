@@ -48,17 +48,17 @@ public class ${modelName?cap_first}Controller implements I${modelName?cap_first}
   }
 
   @Override
-  public ResultDto<Integer> deleteByMap(@RequestBody Map<String, Object> condition) throws Exception {
+  public ResultDto<Long> deleteByMap(@RequestBody Map<String, Object> condition) throws Exception {
     return ResultDto.success(${modelName}Service.deleteByMap(condition));
   }
 
   @Override
-  public ResultDto<Integer> update(@RequestBody ${modelName?cap_first}Model entity) throws Exception {
+  public ResultDto<Long> update(@RequestBody ${modelName?cap_first}Model entity) throws Exception {
     return ResultDto.success(${modelName}Service.update(entity));
   }
 
   @Override
-  public ResultDto<Integer> updateByMap(@RequestBody Map<String, Object> condition) throws Exception {
+  public ResultDto<Long> updateByMap(@RequestBody Map<String, Object> condition) throws Exception {
     return ResultDto.success(${modelName}Service.updateByMap(condition));
   }
 
