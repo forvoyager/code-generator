@@ -5,8 +5,8 @@ import com.xr.base.jdbc.mapper.IBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * <b>time</b>: ${time} <br>
  * <b>author</b>: ${author}
+ * <b>time</b>: ${time} <br>
  * <b>description</b>: ${comments} mapper操作 <br>
  */
 @Mapper

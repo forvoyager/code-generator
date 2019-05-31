@@ -7,8 +7,8 @@ import com.xr.base.jdbc.service.impl.BaseServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
- * <b>time</b>: ${time} <br>
  * <b>author</b>: ${author}
+ * <b>time</b>: ${time} <br>
  * <b>description</b>: ${comments} 服务实现 <br>
  */
 @Service("${modelName}Service")

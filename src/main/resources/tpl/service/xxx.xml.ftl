@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- time: ${time} -->
 <!-- author: ${author} -->
+<!-- time: ${time} -->
 <!-- description: ${comments} 数据库操作mapper -->
 <mapper namespace="${basePackageName}.${moduleName}.mapper.${modelName?cap_first}Mapper">
 
