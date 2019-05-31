@@ -10,6 +10,11 @@ import java.io.Serializable;
  */
 public class BaseModel implements Serializable {
 
+  public static final String CREATE_TIME = "create_time";
+  public static final String UPDATE_TIME = "update_time";
+  public static final String VERSION = "version";
+  public static final String WHERE_VERSION = "where_version";
+
   /**
    * 创建时间
    */

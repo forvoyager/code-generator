@@ -2,8 +2,6 @@ package com.xr.base.core.service;
 
 import com.xr.base.core.enums.Cluster;
 import com.xr.base.core.page.PageData;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -11,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 数据基础操作定义
- *
- * Created by forvoyager@outlook.com on 2019-01-31 13:08.
+ * <b>author</b>: forvoyager@outlook.com
+ * <b>time</b>: 2019-01-31 13:08 <br>
+ * <b>description</b>: 数据基础操作 服务定义 <br>
  */
 public interface IBaseService<T> extends IService {
 
@@ -25,7 +23,6 @@ public interface IBaseService<T> extends IService {
    * @param entity 实体对象
    * @return T 插入成功的对象
    */
-  @Transactional(propagation = Propagation.REQUIRED)
   T insert(T entity) throws Exception;
 
   /**
@@ -36,7 +33,6 @@ public interface IBaseService<T> extends IService {
    * @param entityList 实体对象列表
    * @return Integer 插入成功的记录数
    */
-  @Transactional(propagation = Propagation.REQUIRED)
   int insertBatch(List<T> entityList) throws Exception;
 
   /**
@@ -47,7 +43,6 @@ public interface IBaseService<T> extends IService {
    * @param entity 实体对象
    * @return T 插入/更新成功的对象
    */
-  @Transactional(propagation = Propagation.REQUIRED)
   T insertOrUpdate(T entity) throws Exception;
 
   /**
@@ -58,7 +53,6 @@ public interface IBaseService<T> extends IService {
    * @param id 主键ID
    * @return Integer 删除的行数
    */
-  @Transactional(propagation = Propagation.REQUIRED)
   int deleteById(Serializable id) throws Exception;
 
   /**
@@ -69,8 +63,7 @@ public interface IBaseService<T> extends IService {
    * @param idList 主键ID列表
    * @return Integer 删除的行数
    */
-  @Transactional(propagation = Propagation.REQUIRED)
-  int deleteByIds(Collection<? extends Serializable> idList) throws Exception;
+  long deleteByIds(Collection<? extends Serializable> idList) throws Exception;
 
   /**
    * <p>
@@ -80,8 +73,7 @@ public interface IBaseService<T> extends IService {
    * @param condition 表字段 map 对象
    * @return Integer 删除的行数
    */
-  @Transactional(propagation = Propagation.REQUIRED)
-  int deleteByMap(Map<String, Object> condition) throws Exception;
+  long deleteByMap(Map<String, Object> condition) throws Exception;
 
   /**
    * <p>
@@ -91,8 +83,7 @@ public interface IBaseService<T> extends IService {
    * @param entity 实体对象
    * @return T 更新的行数
    */
-  @Transactional(propagation = Propagation.REQUIRED)
-  int update(T entity) throws Exception;
+  long update(T entity) throws Exception;
 
   /**
    * <p>
@@ -102,8 +93,7 @@ public interface IBaseService<T> extends IService {
    * @param columnMap 表字段 map 对象
    * @return Integer 删除的行数
    */
-  @Transactional(propagation = Propagation.REQUIRED)
-  int updateByMap(Map<String, Object> columnMap) throws Exception;
+  long updateByMap(Map<String, Object> columnMap) throws Exception;
 
   /**
    * <p>

@@ -14,6 +14,8 @@ import com.xr.base.core.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -23,9 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 数据基础操作实现
- * Created by forvoyager@outlook.com on 2019-01-31 14:01.
+ * <b>author</b>: forvoyager@outlook.com
+ * <b>time</b>: 2019-01-31 13:08 <br>
+ * <b>description</b>: 数据基础操作 服务实现 <br>
  */
+@Transactional(propagation = Propagation.REQUIRED)
 public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IBaseService<T> {
 
   protected Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -83,19 +87,11 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
 
     AssertUtils.notNull(id, "delete failed, with invalid primary key id.");
 
-    return this.deleteByMap(MapUtils.newHashMap(this.getPrimaryKeyName(), id));
+    return (int)this.deleteByMap(MapUtils.newHashMap(this.getPrimaryKeyName(), id));
   }
 
   @Override
-  public int deleteByMap(Map<String, Object> condition) throws Exception {
-
-    AssertUtils.notEmpty(condition, "delete failed, with invalid condition.");
-
-    return this.baseMapper.delete(condition);
-  }
-
-  @Override
-  public int deleteByIds(Collection<? extends Serializable> idList) throws Exception {
+  public long deleteByIds(Collection<? extends Serializable> idList) throws Exception {
 
     AssertUtils.notEmpty(idList, "delete batch by id failed, with invalid param value.");
 
@@ -103,7 +99,15 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
   }
 
   @Override
-  public int update(T entity) throws Exception {
+  public long deleteByMap(Map<String, Object> condition) throws Exception {
+
+    AssertUtils.notEmpty(condition, "delete failed, with invalid condition.");
+
+    return this.baseMapper.delete(condition);
+  }
+
+  @Override
+  public long update(T entity) throws Exception {
 
     AssertUtils.notNull(entity, "update failed, with invalid param value.");
     BaseModel baseModel = (BaseModel)entity;
@@ -115,13 +119,14 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
   }
 
   @Override
-  public int updateByMap(Map<String, Object> columnMap) throws Exception {
+  public long updateByMap(Map<String, Object> columnMap) throws Exception {
 
     AssertUtils.notEmpty(columnMap, "update failed, with invalid condition.");
 
     return this.baseMapper.update(columnMap);
   }
 
+  @Transactional(propagation = Propagation.SUPPORTS)
   @Override
   public T selectById(Serializable id, Cluster cluster) throws Exception {
 
@@ -130,6 +135,7 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
     return this.selectOne(MapUtils.newHashMap(this.getPrimaryKeyName(), id), cluster);
   }
 
+  @Transactional(propagation = Propagation.SUPPORTS)
   @Override
   public List<T> selectByIds(Collection<? extends Serializable> idList, Cluster cluster) throws Exception {
     if(CollectionUtils.isEmpty(idList)){
@@ -139,12 +145,14 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
     return this.selectList(MapUtils.newHashMap("idList", idList), cluster);
   }
 
+  @Transactional(propagation = Propagation.SUPPORTS)
   @Override
   public T selectOne(Map<String, Object> condition, Cluster cluster) throws Exception {
     List<T> data = this.baseMapper.selectList(condition);
     return CollectionUtils.isEmpty(data) ? null : data.get(0);
   }
 
+  @Transactional(propagation = Propagation.SUPPORTS)
   @Override
   public List<T> selectList(Map<String, Object> condition, Cluster cluster) throws Exception {
 
@@ -153,6 +161,7 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
     return this.baseMapper.selectList(condition);
   }
 
+  @Transactional(propagation = Propagation.SUPPORTS)
   @Override
   public Map<String, T> selectMap(Map<String, Object> condition, Cluster cluster) throws Exception {
 
@@ -166,6 +175,7 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
     return primaryKeyMapData;
   }
 
+  @Transactional(propagation = Propagation.SUPPORTS)
   @Override
   public long selectCount(Map<String, Object> condition, Cluster cluster) throws Exception {
 
@@ -174,6 +184,7 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
     return this.baseMapper.selectCount(condition);
   }
 
+  @Transactional(propagation = Propagation.SUPPORTS)
   @Override
   public PageData<T> selectPage(int page, int size, Map<String, Object> condition, Cluster cluster) throws Exception {
 
