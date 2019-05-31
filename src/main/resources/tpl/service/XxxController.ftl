@@ -69,7 +69,7 @@ public class ${modelName?cap_first}Controller implements I${modelName?cap_first}
 
   @Override
   public ResultDto<List<${modelName?cap_first}Model>> selectByIds(@RequestBody Collection<? extends Serializable> idList, @PathVariable("master") Cluster master) throws Exception {
-    return ResultDto.success(${modelName}Service.selectBatchIds(idList, master));
+    return ResultDto.success(${modelName}Service.selectByIds(idList, master));
   }
 
   @Override

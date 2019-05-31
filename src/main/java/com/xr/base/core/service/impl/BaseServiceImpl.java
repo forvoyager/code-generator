@@ -95,7 +95,7 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
   }
 
   @Override
-  public int deleteBatchIds(Collection<? extends Serializable> idList) throws Exception {
+  public int deleteByIds(Collection<? extends Serializable> idList) throws Exception {
 
     AssertUtils.notEmpty(idList, "delete batch by id failed, with invalid param value.");
 
@@ -131,7 +131,7 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
   }
 
   @Override
-  public List<T> selectBatchIds(Collection<? extends Serializable> idList, Cluster cluster) throws Exception {
+  public List<T> selectByIds(Collection<? extends Serializable> idList, Cluster cluster) throws Exception {
     if(CollectionUtils.isEmpty(idList)){
       return Collections.EMPTY_LIST;
     }

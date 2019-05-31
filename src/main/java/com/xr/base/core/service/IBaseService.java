@@ -70,7 +70,7 @@ public interface IBaseService<T> extends IService {
    * @return Integer 删除的行数
    */
   @Transactional(propagation = Propagation.REQUIRED)
-  int deleteBatchIds(Collection<? extends Serializable> idList) throws Exception;
+  int deleteByIds(Collection<? extends Serializable> idList) throws Exception;
 
   /**
    * <p>
@@ -126,7 +126,7 @@ public interface IBaseService<T> extends IService {
    * @return
    * @throws Exception
    */
-  List<T> selectBatchIds(Collection<? extends Serializable> idList, Cluster cluster) throws Exception;
+  List<T> selectByIds(Collection<? extends Serializable> idList, Cluster cluster) throws Exception;
 
   /**
    * <p>
