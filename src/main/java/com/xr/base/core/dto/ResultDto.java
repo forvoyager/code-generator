@@ -34,11 +34,11 @@ public class ResultDto<T> implements Serializable{
    */
   private Long time;
 
-  public static ResultDto success(String msg) {
+  public static ResultDto successMessage(String msg) {
     return success(msg, null);
   }
 
-  public static ResultDto success(Object data) {
+  public static ResultDto successData(Object data) {
     return success("OK", data);
   }
 
