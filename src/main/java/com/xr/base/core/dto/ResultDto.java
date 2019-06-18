@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 统一响应信息格式
- *
- * Created by forvoyager@outlook.com on 2019-02-01 11:54.
+ * <b>author</b>: forvoyager@outlook.com
+ * <b>time</b>: 2019-06-18 08:05:38 <br>
+ * <b>description</b>: 统一响应信息格式 <br>
  */
 public class ResultDto<T> implements Serializable{
   /**

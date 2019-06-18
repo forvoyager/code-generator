@@ -3,8 +3,9 @@ package com.xr.base.core.util;
 import java.util.Collection;
 
 /**
- * 集合工具类
- * Created by forvoyager@outlook.com on 2019-01-08 16:47.
+ * <b>author</b>: forvoyager@outlook.com
+ * <b>time</b>: 2019-06-18 08:05:38 <br>
+ * <b>description</b>:集合工具类
  */
 public final class CollectionUtils {
 

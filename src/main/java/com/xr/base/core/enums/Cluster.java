@@ -1,8 +1,9 @@
 package com.xr.base.core.enums;
 
 /**
- * 集群节点属性
- * Created by forvoyager@outlook.com on 2019-01-31 13:38.
+ * <b>author</b>: forvoyager@outlook.com
+ * <b>time</b>: 2019-06-18 08:05:38 <br>
+ * <b>description</b>: 集群节点属性 <br>
  */
 public enum Cluster {
 

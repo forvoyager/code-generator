@@ -1,9 +1,9 @@
 package com.xr.base.core.service;
 
 /**
- * 业务接口
- *
- * Created by forvoyager@outlook.com on 2019-01-31 13:59.
+ * <b>author</b>: forvoyager@outlook.com
+ * <b>time</b>: 2019-06-18 08:05:38 <br>
+ * <b>description</b>: 业务接口
  */
 public interface IService {
 }

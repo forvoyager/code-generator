@@ -5,7 +5,9 @@ import com.xr.base.core.enums.ResultCodeEnum;
 import java.util.Map;
 
 /**
- * Created by forvoyager@outlook.com on 2019-01-31 14:54.
+ * <b>author</b>: forvoyager@outlook.com
+ * <b>time</b>: 2019-06-18 08:05:38 <br>
+ * <b>description</b>:
  */
 public class BaseException extends RuntimeException{
   /**

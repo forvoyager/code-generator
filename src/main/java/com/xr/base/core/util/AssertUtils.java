@@ -1,4 +1,5 @@
 package com.xr.base.core.util;
+
 import com.xr.base.core.enums.ResultCodeEnum;
 import com.xr.base.core.exception.BaseException;
 
@@ -6,8 +7,9 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * 断言工具类
- * Created by forvoyager@outlook.com on 2019-01-31 11:14.
+ * <b>author</b>: forvoyager@outlook.com
+ * <b>time</b>: 2019-06-18 08:05:38 <br>
+ * <b>description</b>: 断言工具类
  */
 public final class AssertUtils {
 

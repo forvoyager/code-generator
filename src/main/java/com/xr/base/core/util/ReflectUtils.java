@@ -14,8 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 反射操作工具类
- * Created by forvoyager@outlook.com on 2019-01-31 14:48.
+ * <b>author</b>: forvoyager@outlook.com
+ * <b>time</b>: 2019-06-18 08:05:38 <br>
+ * <b>description</b>:反射操作工具类
  */
 public final class ReflectUtils {
 

@@ -7,9 +7,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * @author Arnold Yand
- * @summary 日期工具类
- * @time 2019-01-31 15:27
+ * <b>author</b>: forvoyager@outlook.com
+ * <b>time</b>: 2019-06-18 08:05:38 <br>
+ * <b>description</b>:日期工具类
  */
 public class DateUtil {
 
