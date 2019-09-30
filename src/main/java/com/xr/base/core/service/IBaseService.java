@@ -10,8 +10,8 @@ import java.util.Map;
 
 /**
  * <b>author</b>: forvoyager@outlook.com
- * <b>time</b>: 2019-01-31 13:08 <br>
- * <b>description</b>: 数据基础操作 服务定义 <br>
+ * <b>time</b>: 2019-06-18 08:05:38 <br>
+ * <b>description</b>: 数据基础操作 服务定义
  */
 public interface IBaseService<T> extends IService {
 

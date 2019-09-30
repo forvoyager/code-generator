@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 /**
- * <b>description</b>：JSON工具类 <br>
- * <b>time</b>：2019-02-11 13:29 <br>
- * <b>author</b>：forvoyager@outlook.com
+ * <b>author</b>: forvoyager@outlook.com
+ * <b>time</b>: 2019-06-18 08:05:38 <br>
+ * <b>description</b>:JSON工具类
  */
 public final class JsonUtils {
 

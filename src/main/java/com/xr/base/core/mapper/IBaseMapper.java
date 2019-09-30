@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 业务基础操作定义
- *
- * Created by forvoyager@outlook.com on 2019-01-31 13:08.
+ * <b>author</b>: forvoyager@outlook.com
+ * <b>time</b>: 2019-06-18 08:05:38 <br>
+ * <b>description</b>: 数据基础操作定义
  */
 public interface IBaseMapper<T> {
 

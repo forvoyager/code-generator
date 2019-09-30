@@ -4,9 +4,9 @@ import java.beans.Transient;
 import java.io.Serializable;
 
 /**
- * 基础模型数据
- *
- * Created by forvoyager@outlook.com on 2019-02-01 11:34.
+ * <b>author</b>: forvoyager@outlook.com
+ * <b>time</b>: 2019-06-18 08:05:38 <br>
+ * <b>description</b>: 基础模型数据
  */
 public class BaseModel implements Serializable {
 
