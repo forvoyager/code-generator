@@ -43,7 +43,7 @@
   </sql>
 
   <!-- 插入 -->
-  <insert id="insert" parameterType="${basePackageName}.${moduleName}.common.model.${modelName?cap_first}Model" keyProperty="user_id">
+  <insert id="insert" parameterType="${basePackageName}.${moduleName}.common.model.${modelName?cap_first}Model" keyProperty="${primaryField}" useGeneratedKeys="true">
     <![CDATA[ INSERT INTO `${tableName}` ]]>
     <trim prefix="(" suffix=")" suffixOverrides=",">
     <#list fieldList as field>
