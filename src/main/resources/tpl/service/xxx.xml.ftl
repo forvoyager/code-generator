@@ -44,7 +44,7 @@
 
   <!-- 插入 -->
   <insert id="insert" parameterType="${basePackageName}.${moduleName}.common.model.${modelName?cap_first}Model" keyProperty="${primaryField}" useGeneratedKeys="true">
-    <![CDATA[ INSERT INTO `${tableName}` ]]>
+    <![CDATA[ INSERT INTO ${tableName} ]]>
     <trim prefix="(" suffix=")" suffixOverrides=",">
     <#list fieldList as field>
       <if test="${field.name} != null">
@@ -64,7 +64,7 @@
 
   <!-- 批量插入 -->
   <insert id="insertBatch" parameterType="${basePackageName}.${moduleName}.common.model.${modelName?cap_first}Model">
-    <![CDATA[ INSERT INTO `${tableName}` (<#list fieldList as field>`${field.name}`<#if (fieldList?size > field_index+1) >, </#if></#list>) VALUES ]]>
+    <![CDATA[ INSERT INTO ${tableName} (<#list fieldList as field>`${field.name}`<#if (fieldList?size > field_index+1) >, </#if></#list>) VALUES ]]>
     <foreach collection="list" separator="," item="item">
       (<#list fieldList as field>${'#'}{item.${field.name}}<#if (fieldList?size > field_index+1) >, </#if></#list>)
     </foreach>
@@ -72,7 +72,7 @@
 
   <!-- 更新（主键/version/create_time不会被更新，version自增1） -->
   <update id="update" parameterType="map">
-    <![CDATA[ UPDATE `${tableName}` t SET t.`version` = t.`version` + 1, ]]>
+    <![CDATA[ UPDATE ${tableName} t SET t.`version` = t.`version` + 1, ]]>
     <trim suffixOverrides=",">
     <#list fieldList as field>
       <#if (field.name == "version" || field.name == "create_time" || field.name == "${primaryField}")>
@@ -95,13 +95,13 @@
 
   <!-- 删除 -->
   <delete id="delete" parameterType="map">
-    <![CDATA[ DELETE t FROM `${tableName}` t ]]>
+    <![CDATA[ DELETE t FROM ${tableName} t ]]>
     <include refid="Where_Sql"/>
   </delete>
 
   <!-- 查询行数 -->
   <select id="selectCount" parameterType="map" resultType="long">
-    <![CDATA[ SELECT COUNT(*) FROM `${tableName}` t ]]>
+    <![CDATA[ SELECT COUNT(*) FROM ${tableName} t ]]>
     <include refid="Where_Sql"/>
   </select>
 
@@ -110,7 +110,7 @@
     <include refid="global.pageStart"/>
     <![CDATA[ SELECT ]]>
     <include refid="Base_Column_List"/>
-    <![CDATA[ FROM `${tableName}` t ]]>
+    <![CDATA[ FROM ${tableName} t ]]>
     <include refid="Where_Sql"/>
     <include refid="global.globalSort"/>
     <include refid="global.pageEnd"/>
