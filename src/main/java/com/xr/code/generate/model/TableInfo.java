@@ -28,6 +28,10 @@ public class TableInfo {
    * 主键字段类型
    */
   private String primaryType;
+  /**
+   * 是否有乐观锁
+   */
+  private boolean optimisticLock;
 
   public String getTableName() {
     return tableName;
@@ -80,6 +84,15 @@ public class TableInfo {
 
   public TableInfo setPrimaryType(String primaryType) {
     this.primaryType = primaryType;
+    return this;
+  }
+
+  public boolean isOptimisticLock() {
+    return optimisticLock;
+  }
+
+  public TableInfo setOptimisticLock(boolean optimisticLock) {
+    this.optimisticLock = optimisticLock;
     return this;
   }
 }
