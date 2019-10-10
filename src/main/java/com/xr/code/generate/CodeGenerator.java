@@ -32,30 +32,30 @@ import java.util.Set;
 public class CodeGenerator {
   public static void main(String[] args) throws Exception {
     // 项目名称
-    String projectName = "micro_service";
+    String projectName = "lite-loan";
     // 基础包名
-    String basePackageName = "com.xr";
+    String basePackageName = "com.etl";
     // 模块名称
-    String moduleName = "account";
+    String moduleName = "user";
     // 模块名前缀
-    String modulePrefix = "ms-";
+    String modulePrefix = "etl-";
     // 作者
     String author = "forvoyager@outlook.com";
     // 代码存放路径
-    String outputPath = "./code";
+    String outputPath = "E:\\xR\\code";
 
     // 数据库配置
-    String url = "jdbc:mysql://localhost:3306/ms_account_db?characterEncoding=UTF-8";
+    String url = "jdbc:mysql://localhost:3306/www_etl_com?characterEncoding=UTF-8";
     String driver = "com.mysql.jdbc.Driver";
-    String username = "root";
+    String username = "etl_admin";
     String password = "123456";
     // 需要去掉的表前缀
-    String skipTablePrefix = "ms_";
+    String skipTablePrefix = "etl_";
 
     // 需要生成代码的表Map<tableName, comment>
     List<String> tables = new ArrayList<String>();
-    tables.add("ms_account");
-    tables.add("ms_user_level");
+    tables.add("etl_user_account");
+    tables.add("etl_user_account_data");
 
     // 构建生成代码的数据
     new CodeGenerator()
@@ -177,6 +177,7 @@ public class CodeGenerator {
       data.put("fieldList", table.getColumnList());
       data.put("primaryField", table.getPrimaryColumn());
       data.put("primaryFieldType", table.getPrimaryType());
+      data.put("optimisticLock", table.isOptimisticLock());
       code = FreemarkerUtils.getFtlToString("/service/xxx.xml", data);
       file = new FileData();
       file.setName(table.getName() + ".xml");
@@ -202,7 +203,7 @@ public class CodeGenerator {
         filePath.mkdirs();
       }
 
-      fos = new FileOutputStream(path + fd.getName(), true);
+      fos = new FileOutputStream(path + fd.getName(), false);
       fos.write(fd.getContent().getBytes("UTF-8"));
       fos.flush();
       fos.close();
@@ -239,12 +240,18 @@ public class CodeGenerator {
 
         // 获取表中所有字段
         List<ColumnInfo> columns = new ArrayList<ColumnInfo>();
+        // 是否有乐观锁控制
+        boolean optimisticLock = false;
         rs = dbmd.getColumns(null, "%", table, "%");
         while (rs.next()) {
           // 是否是主键，默认不是
           boolean isPrimary = false;
           String column_name = rs.getString("COLUMN_NAME");
           String remark = rs.getString("REMARKS");
+          
+          if("version".equals(column_name)){
+            optimisticLock = true;
+          }
 
           /**
            * 默认以自增长列为主键。
@@ -274,7 +281,7 @@ public class CodeGenerator {
           );
         }
         if (columns.size() == 0) {
-          throw new RuntimeException("表中无有效字段，无法生成代码。");
+          throw new RuntimeException(table+"表中无有效字段，无法生成代码。");
         }
 
         tableInfo = new TableInfo();
@@ -284,6 +291,7 @@ public class CodeGenerator {
         tableInfo.setColumnList(columns);
         tableInfo.setPrimaryColumn(pk);
         tableInfo.setPrimaryType(pkType);
+        tableInfo.setOptimisticLock(optimisticLock);
         tableInfos.add(tableInfo);
       }
     } finally {
@@ -429,7 +437,7 @@ public class CodeGenerator {
 
   private static final String XxxMODEL_PATH = "%s%s-common/src/main/java/%s/%s/common/model";
   private static final String IXxxController_PATH = "%s%s-common/src/main/java/%s/%s/common/controller";
-  private static final String XxxClient_PATH = "%s%s-client-starter/src/main/java/%s/%s/client";
+  private static final String XxxClient_PATH = "%s%s-client-starter/src/main/java/%s/%s/client/api";
   private static final String XxxController_PATH = "%s%s-service/src/main/java/%s/%s/controller";
   private static final String IXxxService_PATH = "%s%s-service/src/main/java/%s/%s/service";
   private static final String XxxServiceImpl_PATH = "%s%s-service/src/main/java/%s/%s/service/impl";

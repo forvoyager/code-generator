@@ -22,11 +22,11 @@
         <![CDATA[ ${r"#{item}"} ]]>
       </foreach>
     </if>
+  <#list fieldList as field>
+    <#if (field.name == "version")>
     <if test="where_version != null">
       <![CDATA[ AND t.`version` = ${r"#{where_version}"} ]]>
     </if>
-  <#list fieldList as field>
-    <#if (field.name == "version")>
     <#else>
     <if test="${field.name} != null">
       <![CDATA[ AND t.`${field.name}` = ${r"#{"}${field.name}} ]]>
@@ -87,9 +87,11 @@
       <if test="${primaryField} != null">
         <![CDATA[ AND t.`${primaryField}` = ${r"#{"}${primaryField}} ]]>
       </if>
+      <#if (optimisticLock == true)>
       <if test="where_version != null">
         <![CDATA[ AND t.`version` = ${r"#{"}where_version} ]]>
       </if>
+      </#if>
     </where>
   </update>
 
