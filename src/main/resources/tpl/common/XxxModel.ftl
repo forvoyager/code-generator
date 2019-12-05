@@ -24,11 +24,11 @@ public class ${modelName?cap_first}Model extends BaseModel {
   public ${field.javaTypeName} get${field.name?cap_first}() {
     return this.${field.name};
   }
+
   public ${modelName?cap_first}Model set${field.name?cap_first}(${field.javaTypeName} ${field.name}) {
     this.${field.name} = ${field.name};
     return this;
   }
-
   </#list>
 }
 
