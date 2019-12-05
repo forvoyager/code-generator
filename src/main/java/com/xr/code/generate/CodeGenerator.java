@@ -42,7 +42,7 @@ public class CodeGenerator {
     // 作者
     String author = "forvoyager@outlook.com";
     // 代码存放路径
-    String outputPath = "E:\\xR\\code";
+    String outputPath = "F:\\xR\\code";
 
     // 数据库配置
     String url = "jdbc:mysql://localhost:3306/www_etl_com?characterEncoding=UTF-8";
@@ -54,8 +54,33 @@ public class CodeGenerator {
 
     // 需要生成代码的表Map<tableName, comment>
     List<String> tables = new ArrayList<String>();
-    tables.add("etl_user_account");
-    tables.add("etl_user_account_data");
+    tables.add("etl_creditor_transfer");
+    tables.add("etl_creditor");
+
+//    // 项目名称
+//    String projectName = "pinganchuxing";
+//    // 基础包名
+//    String basePackageName = "com.xr";
+//    // 模块名称
+//    String moduleName = "pingan";
+//    // 模块名前缀
+//    String modulePrefix = "p-";
+//    // 作者
+//    String author = "forvoyager@outlook.com";
+//    // 代码存放路径
+//    String outputPath = "E:\\xR\\code";
+//
+//    // 数据库配置
+//    String url = "jdbc:mysql://localhost:3306/www_pacx_com?characterEncoding=UTF-8";
+//    String driver = "com.mysql.jdbc.Driver";
+//    String username = "p_admin";
+//    String password = "123456";
+//    // 需要去掉的表前缀
+//    String skipTablePrefix = "p_";
+//
+//    // 需要生成代码的表Map<tableName, comment>
+//    List<String> tables = new ArrayList<String>();
+//    tables.add("p_user");
 
     // 构建生成代码的数据
     new CodeGenerator()
@@ -84,6 +109,7 @@ public class CodeGenerator {
             .tableInfo(tables)
             .generate();
 
+    System.out.println("代码路径：" + outputPath);
   }
 
   /**
@@ -384,7 +410,7 @@ public class CodeGenerator {
   private Connection getConnection() throws ClassNotFoundException, SQLException {
     Class.forName(this.databaseInfo.getDriver());
     return DriverManager.getConnection(
-            this.databaseInfo.getUrl()+"&&useInformationSchema=true",
+            this.databaseInfo.getUrl()+"&useInformationSchema=true&serverTimezone=UTC",
             this.databaseInfo.getUsername(),
             this.databaseInfo.getPassword());
   }
