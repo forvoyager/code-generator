@@ -29,6 +29,7 @@ public class ${modelName?cap_first}Model extends BaseModel {
     this.${field.name} = ${field.name};
     return this;
   }
+
   </#list>
 }
 
