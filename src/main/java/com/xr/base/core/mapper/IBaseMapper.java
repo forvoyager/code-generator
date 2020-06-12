@@ -12,7 +12,7 @@ public interface IBaseMapper<T> {
 
   /**
    * <p>
-   * 插入一条记录
+   * 插入
    * </p>
    *
    * @param entity 实体对象
@@ -21,7 +21,7 @@ public interface IBaseMapper<T> {
 
   /**
    * <p>
-   * 插入（批量），该方法不适合 Oracle
+   * 插入（批量）
    * </p>
    *
    * @param entityList 实体对象列表
@@ -30,25 +30,25 @@ public interface IBaseMapper<T> {
 
   /**
    * <p>
-   * 根据 condition 条件，删除记录
+   * 根据条件删除记录
    * </p>
    *
    * @param condition 删除条件
-   * @return Integer 删除的行数
+   * @return 删除的行数
    */
-  int delete(Map<String, Object> condition);
+  long delete(Map<String, Object> condition);
 
   /**
-   * 根据传入的map参数进行更新
+   * 根据条件进行更新
    *
-   * @param columnMap 更新参数/查询条件
+   * @param columnMap 更新参数及条件
    * @return
    */
-  int update(Map<String, Object> columnMap);
+  long update(Map<String, Object> columnMap);
 
   /**
    * <p>
-   * 查询（根据 condition 条件）
+   * 根据条件进行列表查询
    * </p>
    *
    * @param condition 查询条件
@@ -58,7 +58,7 @@ public interface IBaseMapper<T> {
 
   /**
    * <p>
-   * 根据 Wrapper 条件，查询总记录数
+   * 根据条件查询总记录数
    * </p>
    *
    * @param condition 查询条件

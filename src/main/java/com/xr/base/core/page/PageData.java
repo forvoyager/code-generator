@@ -1,8 +1,8 @@
 package com.xr.base.core.page;
 
 import java.beans.Transient;
+import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,31 +10,51 @@ import java.util.Map;
  * 分页信息
  * <b>author</b>: forvoyager@outlook.com
  * <b>time</b>: 2019-06-18 08:05:38 <br>
- * <b>description</b>: 基础模型数据
+ * <b>description</b>: 分页查询数据
  */
-public class PageData<T> {
+public class PageData<T> implements Serializable {
 
   private static final long serialVersionUID = 166L;
 
   /**
    * 总记录数
    */
-  private long records;
-
-  /**
-   * 每页显示条数，默认 10
-   */
-  private int size = 10;
+  private long totalRecords;
 
   /**
    * 总页数
    */
-  private int pages;
+  private int totalPages;
 
   /**
    * 当前页（默认显示第1页）
    */
-  private int page = 1;
+  private int currentPage = 1;
+
+  /**
+   * 下一页
+   */
+  private int nextPage;
+
+  /**
+   * 前一页
+   */
+  private int prePage;
+
+  /**
+   * 是否是第一页
+   */
+  private boolean isFirstPage;
+
+  /**
+   * 是否是最后一页
+   */
+  private boolean isLastPage;
+
+  /**
+   * 每页显示条数，默认 10
+   */
+  private int pageSize = 10;
 
   /**
    * 查询数据列表
@@ -46,36 +66,68 @@ public class PageData<T> {
    */
   private Map<String, Object> condition;
 
-  public long getRecords() {
-    return records;
+  public long getTotalRecords() {
+    return totalRecords;
   }
 
-  public void setRecords(long records) {
-    this.records = records;
+  public void setTotalRecords(long totalRecords) {
+    this.totalRecords = totalRecords;
   }
 
-  public int getSize() {
-    return size;
+  public int getTotalPages() {
+    return totalPages;
   }
 
-  public void setSize(int size) {
-    this.size = size;
+  public void setTotalPages(int totalPages) {
+    this.totalPages = totalPages;
   }
 
-  public int getPages() {
-    return pages;
+  public int getCurrentPage() {
+    return currentPage;
   }
 
-  public void setPages(int pages) {
-    this.pages = pages;
+  public void setCurrentPage(int currentPage) {
+    this.currentPage = currentPage;
   }
 
-  public int getPage() {
-    return page;
+  public int getNextPage() {
+    return nextPage;
   }
 
-  public void setPage(int page) {
-    this.page = page;
+  public void setNextPage(int nextPage) {
+    this.nextPage = nextPage;
+  }
+
+  public int getPrePage() {
+    return prePage;
+  }
+
+  public void setPrePage(int prePage) {
+    this.prePage = prePage;
+  }
+
+  public boolean isFirstPage() {
+    return isFirstPage;
+  }
+
+  public void setFirstPage(boolean firstPage) {
+    isFirstPage = firstPage;
+  }
+
+  public boolean isLastPage() {
+    return isLastPage;
+  }
+
+  public void setLastPage(boolean lastPage) {
+    isLastPage = lastPage;
+  }
+
+  public int getPageSize() {
+    return pageSize;
+  }
+
+  public void setPageSize(int pageSize) {
+    this.pageSize = pageSize;
   }
 
   public List<T> getData() {
@@ -95,10 +147,4 @@ public class PageData<T> {
     this.condition = condition;
   }
 
-  public void putCondition(String key, Object val){
-    if(this.condition == null){
-      this.condition = new HashMap<>();
-    }
-    this.condition.put(key, val);
-  }
 }

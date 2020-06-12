@@ -127,22 +127,23 @@ public final class ReflectUtils {
     List<Field> fieldList = new LinkedList<>();
     Field[] fields = clazz.getDeclaredFields();
     for (Field field : fields) {
-            /* 过滤静态属性 */
+      /* 过滤静态属性 */
       if (Modifier.isStatic(field.getModifiers())) {
         continue;
       }
-            /* 过滤 transient关键字修饰的属性 */
+      /* 过滤 transient关键字修饰的属性 */
       if (Modifier.isTransient(field.getModifiers())) {
         continue;
       }
       fieldList.add(field);
     }
-        /* 处理父类字段 */
+    /* 处理父类字段 */
     Class<?> superClass = clazz.getSuperclass();
     if (superClass.equals(Object.class)) {
       return fieldList;
     }
-        /* 排除重载属性 */
+
+    /* 排除重载属性 */
     return excludeOverrideSuperField(fieldList, getFieldList(superClass));
   }
 

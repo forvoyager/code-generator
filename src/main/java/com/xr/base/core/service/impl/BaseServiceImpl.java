@@ -1,5 +1,7 @@
 package com.xr.base.core.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.xr.base.core.enums.Cluster;
 import com.xr.base.core.mapper.IBaseMapper;
 import com.xr.base.core.model.BaseModel;
@@ -10,7 +12,6 @@ import com.xr.base.core.util.CollectionUtils;
 import com.xr.base.core.util.DateUtil;
 import com.xr.base.core.util.MapUtils;
 import com.xr.base.core.util.ReflectUtils;
-import com.xr.base.core.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,19 +29,22 @@ import java.util.Map;
  * <b>time</b>: 2019-06-18 08:05:38 <br>
  * <b>description</b>: 数据基础操作 服务实现
  */
-@Transactional(propagation = Propagation.REQUIRED)
 public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IBaseService<T> {
 
   protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  private final String dbType = "MYSQL";
-
   @Autowired
   protected M baseMapper;
 
+  /**
+   * 主键名称
+   * @return
+   */
+  protected abstract String getPrimaryKeyName();
+
+  @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
   @Override
   public T insert(T entity) throws Exception {
-
     AssertUtils.notNull(entity, "insert failed, with invalid param value.");
     BaseModel baseModel = (BaseModel)entity;
     if(baseModel.getCreate_time() == null){
@@ -54,73 +57,79 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
     return entity;
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
   @Override
   public int insertBatch(List<T> entityList) throws Exception {
-
     AssertUtils.notEmpty(entityList, "insert batch failed, with invalid param value.");
 
     this.baseMapper.insertBatch(entityList);
     return entityList.size();
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
   @Override
-  public T insertOrUpdate(T entity) throws Exception {
-
+  public T upsert(T entity) throws Exception {
     AssertUtils.notNull(entity, "insert or update failed, with invalid param value.");
 
-    Object idVal = ReflectUtils.getMethodValue(entity, this.getPrimaryKeyName());
-    if (StringUtils.isEmpty(idVal)) {
-      entity = insert(entity);
+    String primaryKey = this.getPrimaryKeyName();
+    Object idVal = ReflectUtils.getMethodValue(entity, primaryKey);
+    if (idVal == null) {
+      this.insert(entity);
     } else {
-      if (1 == update(entity)) {
-        entity = selectOne(MapUtils.newHashMap(this.getPrimaryKeyName(), idVal), Cluster.master);
-      } else {
-        entity = insert(entity);
+      long updated = update(entity);
+      if(updated > 1){
+        // 根据id更新，但是更新了多条记录，不正常
+        throw new IllegalStateException("update by primary key failed.");
+      }
+
+      // 没有更新到，插入新数据
+      if (0 == updated) {
+        this.insert(entity);
       }
     }
 
-    return entity;
+    return this.selectOne(MapUtils.newHashMap(primaryKey, idVal), Cluster.master);
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
   @Override
-  public int deleteById(Serializable id) throws Exception {
-
+  public long deleteById(Serializable id) throws Exception {
     AssertUtils.notNull(id, "delete failed, with invalid primary key id.");
 
-    return (int)this.deleteByMap(MapUtils.newHashMap(this.getPrimaryKeyName(), id));
+    return this.delete(MapUtils.newHashMap(this.getPrimaryKeyName(), id));
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
   @Override
   public long deleteByIds(Collection<? extends Serializable> idList) throws Exception {
-
     AssertUtils.notEmpty(idList, "delete batch by id failed, with invalid param value.");
 
-    return this.deleteByMap(MapUtils.newHashMap("idList", idList));
+    return this.delete(MapUtils.newHashMap("idList", idList));
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
   @Override
-  public long deleteByMap(Map<String, Object> condition) throws Exception {
-
+  public long delete(Map<String, Object> condition) throws Exception {
     AssertUtils.notEmpty(condition, "delete failed, with invalid condition.");
 
     return this.baseMapper.delete(condition);
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
   @Override
   public long update(T entity) throws Exception {
-
     AssertUtils.notNull(entity, "update failed, with invalid param value.");
     BaseModel baseModel = (BaseModel)entity;
     if(baseModel.getUpdate_time() == null){
       baseModel.setUpdate_time(DateUtil.currentTimeInSecond());
     }
 
-    return this.updateByMap(ReflectUtils.javaBeanToMap(entity));
+    return this.update(ReflectUtils.javaBeanToMap(entity));
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
   @Override
-  public long updateByMap(Map<String, Object> columnMap) throws Exception {
-
+  public long update(Map<String, Object> columnMap) throws Exception {
     AssertUtils.notEmpty(columnMap, "update failed, with invalid condition.");
 
     return this.baseMapper.update(columnMap);
@@ -129,7 +138,6 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
   @Transactional(propagation = Propagation.SUPPORTS)
   @Override
   public T selectById(Serializable id, Cluster cluster) throws Exception {
-
     if(id == null){ return null; }
 
     return this.selectOne(MapUtils.newHashMap(this.getPrimaryKeyName(), id), cluster);
@@ -148,14 +156,27 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
   @Transactional(propagation = Propagation.SUPPORTS)
   @Override
   public T selectOne(Map<String, Object> condition, Cluster cluster) throws Exception {
-    List<T> data = this.baseMapper.selectList(condition);
-    return CollectionUtils.isEmpty(data) ? null : data.get(0);
+    return this.selectOne(condition, cluster, false);
+  }
+
+  @Transactional(propagation = Propagation.SUPPORTS)
+  @Override
+  public T selectOne(Map<String, Object> condition, Cluster cluster, boolean throwException) throws Exception {
+    List<T> data = this.selectList(condition, cluster);
+    if(CollectionUtils.isEmpty(data)){
+      return null;
+    }
+
+    if(throwException && data.size() > 1){
+      throw new IllegalStateException("select one, but found "+data.size());
+    }
+
+    return data.get(0);
   }
 
   @Transactional(propagation = Propagation.SUPPORTS)
   @Override
   public List<T> selectList(Map<String, Object> condition, Cluster cluster) throws Exception {
-
     AssertUtils.notEmpty(condition, "select failed, with invalid condition.");
 
     return this.baseMapper.selectList(condition);
@@ -163,22 +184,7 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
 
   @Transactional(propagation = Propagation.SUPPORTS)
   @Override
-  public Map<String, T> selectMap(Map<String, Object> condition, Cluster cluster) throws Exception {
-
-    Map<String, T> primaryKeyMapData = new HashMap<String, T>();
-
-    List<T> datas = this.selectList(condition, cluster);
-    for(T data : datas){
-      primaryKeyMapData.put(ReflectUtils.getMethodValue(data, this.getPrimaryKeyName()).toString(), data);
-    }
-
-    return primaryKeyMapData;
-  }
-
-  @Transactional(propagation = Propagation.SUPPORTS)
-  @Override
   public long selectCount(Map<String, Object> condition, Cluster cluster) throws Exception {
-
     AssertUtils.notEmpty(condition, "select failed, with invalid condition.");
 
     return this.baseMapper.selectCount(condition);
@@ -186,46 +192,37 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
 
   @Transactional(propagation = Propagation.SUPPORTS)
   @Override
-  public PageData<T> selectPage(int page, int size, Map<String, Object> condition, Cluster cluster) throws Exception {
+  public PageData<T> selectPage(int currentPage, int pageSize, Map<String, Object> condition, Cluster cluster) throws Exception {
 
     // 默认返回第1页
-    page = page < 1 ? 1 : page;
+    currentPage = currentPage < 1 ? 1 : currentPage;
 
     // 默认每页10条
-    int pageSize = size < 1 ? 10 : size;
-
-    // 计算page页的起始行位置
-    long pageStartIndex = (page -1)*size;
+    pageSize = pageSize < 1 ? 10 : pageSize;
 
     if(condition == null){
-      condition = new HashMap<>();
+      condition = Collections.EMPTY_MAP;
     }
 
-    condition.put("pagesize", pageSize);
-    condition.put("pagestartindex", pageStartIndex);
-    condition.put("dbType", dbType);
+    if(condition.containsKey("orderBy")){
+      PageHelper.startPage(currentPage, pageSize, condition.get("orderBy").toString());
+    } else {
+      PageHelper.startPage(currentPage, pageSize);
+    }
 
-    // 查询总记录数
-    long records = this.selectCount(condition, cluster);
-
-    // 查询当前页数据
-    List<T> data = this.selectList(condition, cluster);
+    List<T> dataList = this.selectList(condition, cluster);
+    PageInfo pageInfo = new PageInfo(dataList);
 
     PageData<T> pageData = new PageData<T>();
-    pageData.setPage(page);
-    pageData.setSize(pageSize);
-    pageData.setCondition(condition);
-    pageData.setRecords(records);
-    pageData.setPages( (int) (records/size) + (records%size > 0 ? 1 : 0) );
-    pageData.setData(data);
+    pageData.setCurrentPage(currentPage);
+    pageData.setNextPage(pageInfo.getNextPage());
+    pageData.setPrePage(pageInfo.getPrePage());
+    pageData.setPageSize(pageSize);
+    pageData.setTotalRecords(pageInfo.getTotal());
+    pageData.setTotalPages(pageInfo.getPages());
+    pageData.setData(dataList);
 
     return pageData;
   }
 
-
-  /**
-   * 主键名称
-   * @return
-   */
-  protected abstract String getPrimaryKeyName();
 }
