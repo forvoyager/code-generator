@@ -51,6 +51,10 @@ public class ResultDto<T> implements Serializable{
     return result;
   }
 
+  public static ResultDto success() {
+    return success("OK", null);
+  }
+
   public static ResultDto failure(String msg) {
     return failure(msg, null);
   }

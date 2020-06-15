@@ -43,7 +43,7 @@ public class ${modelName?cap_first}Controller implements I${modelName?cap_first}
   }
 
   @Override
-  public ResultDto<Integer> deleteById(@PathVariable("${primaryField}") long ${primaryField}) throws Exception {
+  public ResultDto<Long> deleteById(@PathVariable("${primaryField}") long ${primaryField}) throws Exception {
     return ResultDto.successData(${modelName}Service.deleteById(${primaryField}));
   }
 

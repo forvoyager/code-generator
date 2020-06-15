@@ -31,40 +31,36 @@ import java.util.Set;
  */
 public class CodeGenerator {
   public static void main(String[] args) throws Exception {
-    // 项目名称
-    String projectName = "lite-loan";
+
+    // 代码类型：普通springMVC，feign微服务
+    String codeType = "mvc";
+
     // 基础包名
-    String basePackageName = "com.etl";
+    String basePackageName = "com.demo";
     // 模块名称
-    String moduleName = "user";
-    // 模块名前缀
-    String modulePrefix = "etl-";
+    String moduleName = "account";
     // 作者
-    String author = "forvoyager@outlook.com";
+    String author = "yang.changyan@foundbyte.com";
     // 代码存放路径
-    String outputPath = "F:\\xR\\code";
+    String outputPath = "F:\\code";
 
     // 数据库配置
-    String url = "jdbc:mysql://localhost:3306/www_etl_com?characterEncoding=UTF-8";
+    String url = "jdbc:mysql://10.10.11.105:3306/msgcptn_center?characterEncoding=UTF-8";
     String driver = "com.mysql.jdbc.Driver";
-    String username = "etl_admin";
-    String password = "123456";
+    String username = "root";
+    String password = "ey4nGsVL";
     // 需要去掉的表前缀
-    String skipTablePrefix = "etl_";
+    String skipTablePrefix = "st_";
 
     // 需要生成代码的表Map<tableName, comment>
     List<String> tables = new ArrayList<String>();
-    tables.add("etl_creditor_transfer");
-    tables.add("etl_creditor");
+    tables.add("st_message");
+    tables.add("st_message_content");
 
-//    // 项目名称
-//    String projectName = "pinganchuxing";
 //    // 基础包名
 //    String basePackageName = "com.xr";
 //    // 模块名称
 //    String moduleName = "pingan";
-//    // 模块名前缀
-//    String modulePrefix = "p-";
 //    // 作者
 //    String author = "forvoyager@outlook.com";
 //    // 代码存放路径
@@ -86,10 +82,9 @@ public class CodeGenerator {
     new CodeGenerator()
             .setCodeInfo(
                     new CodeInfo()
-                            .setProjectName(projectName)
+                            .setCodeType(codeType)
                             .setBasePackageName(basePackageName)
                             .setModuleName(moduleName)
-                            .setModulePrefix(modulePrefix)
                             .setAuthor(author)
                             .setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
                             .setSkipTablePrefix(skipTablePrefix)
@@ -119,7 +114,7 @@ public class CodeGenerator {
 
     String basePackageName = this.codeInfo.getBasePackageName();
     String moduleName = this.codeInfo.getModuleName();
-    String modulePrefix = this.codeInfo.getModulePrefix();
+    String codeType = this.codeInfo.getCodeType();
 
     Map data = new HashMap();
     data.put("author", this.codeInfo.getAuthor());
@@ -130,86 +125,11 @@ public class CodeGenerator {
     List<FileData> files = new ArrayList<FileData>();
 
     // 生成代码信息
-    String code = null;
-    FileData file = null;
-    for (TableInfo table : tableInfos) {
-      data.put("comments", table.getComments());
-      data.put("modelName", table.getName());
-
-      // 生成Model
-      data.put("fieldList", removeSkipField(table.getColumnList()));
-      code = FreemarkerUtils.getFtlToString("/common/XxxModel", data);
-      file = new FileData();
-      file.setName(upperFirst(table.getName()) + "Model.java");
-      file.setContent(code);
-      file.setPath(String.format(XxxMODEL_PATH, modulePrefix, moduleName, basePackageName, moduleName));
-      files.add(file);
-
-      // 生成IController
-      data.put("primaryField", table.getPrimaryColumn());
-      data.put("primaryFieldType", table.getPrimaryType());
-      code = FreemarkerUtils.getFtlToString("/common/IXxxController", data);
-      file = new FileData();
-      file.setName("I" + upperFirst(table.getName()) + "Controller.java");
-      file.setContent(code);
-      file.setPath(String.format(IXxxController_PATH, modulePrefix, moduleName, basePackageName, moduleName));
-      files.add(file);
-
-      // 生成Controller
-      data.put("primaryField", table.getPrimaryColumn());
-      data.put("primaryFieldType", table.getPrimaryType());
-      code = FreemarkerUtils.getFtlToString("/service/XxxController", data);
-      file = new FileData();
-      file.setName(upperFirst(table.getName()) + "Controller.java");
-      file.setContent(code);
-      file.setPath(String.format(XxxController_PATH, modulePrefix, moduleName, basePackageName, moduleName));
-      files.add(file);
-
-      // 生成Client
-      code = FreemarkerUtils.getFtlToString("/client/XxxClient", data);
-      file = new FileData();
-      file.setName(upperFirst(table.getName()) + "Client.java");
-      file.setContent(code);
-      file.setPath(String.format(XxxClient_PATH, modulePrefix, moduleName, basePackageName, moduleName));
-      files.add(file);
-
-      // 生成Service
-      code = FreemarkerUtils.getFtlToString("/service/IXxxService", data);
-      file = new FileData();
-      file.setName("I" + upperFirst(table.getName()) + "Service.java");
-      file.setContent(code);
-      file.setPath(String.format(IXxxService_PATH, modulePrefix, moduleName, basePackageName, moduleName));
-      files.add(file);
-
-      // 生成ServiceImpl
-      data.put("primaryField", table.getPrimaryColumn());
-      code = FreemarkerUtils.getFtlToString("/service/XxxServiceImpl", data);
-      file = new FileData();
-      file.setName(upperFirst(table.getName()) + "ServiceImpl.java");
-      file.setContent(code);
-      file.setPath(String.format(XxxServiceImpl_PATH, modulePrefix, moduleName, basePackageName, moduleName));
-      files.add(file);
-
-      // 生成Mapper
-      code = FreemarkerUtils.getFtlToString("/service/XxxMapper", data);
-      file = new FileData();
-      file.setName(upperFirst(table.getName()) + "Mapper.java");
-      file.setContent(code);
-      file.setPath(String.format(XxxMapper_PATH, modulePrefix, moduleName, basePackageName, moduleName));
-      files.add(file);
-
-      // 生成mapper xml
-      data.put("tableName", table.getTableName());
-      data.put("fieldList", table.getColumnList());
-      data.put("primaryField", table.getPrimaryColumn());
-      data.put("primaryFieldType", table.getPrimaryType());
-      data.put("optimisticLock", table.isOptimisticLock());
-      code = FreemarkerUtils.getFtlToString("/service/xxx.xml", data);
-      file = new FileData();
-      file.setName(table.getName() + ".xml");
-      file.setContent(code);
-      file.setPath(String.format(XxxMapperXml_PATH, modulePrefix, moduleName));
-      files.add(file);
+    if(codeType.toLowerCase().contains("mvc")){
+      files = buildMvcCode(moduleName, basePackageName, data, files);
+    }
+    if(codeType.toLowerCase().contains("feign")){
+      files = buildFeignCode(moduleName, basePackageName, data, files);
     }
 
     // 生成代码文件
@@ -217,8 +137,6 @@ public class CodeGenerator {
     FileOutputStream fos = null;
     StringBuffer basePath = new StringBuffer();
     basePath.append(this.codeInfo.getOutputPath()).append("/");
-    basePath.append(this.codeInfo.getProjectName()).append("/");
-    basePath.append(this.codeInfo.getModulePrefix());
     basePath.append(this.codeInfo.getModuleName()).append("/");
     String path = null;
     for (FileData fd : files) {
@@ -235,6 +153,160 @@ public class CodeGenerator {
       fos.close();
       System.out.println(String.format("生成%s，完成。", fd.getName()));
     }
+  }
+
+  private List<FileData> buildFeignCode(String moduleName, String basePackageName, Map data, List<FileData> files) throws Exception{
+    String code = null;
+    FileData file = null;
+    for (TableInfo table : tableInfos) {
+      data.put("comments", table.getComments());
+      data.put("modelName", table.getName());
+
+      // 生成Model
+      data.put("fieldList", removeSkipField(table.getColumnList()));
+      code = FreemarkerUtils.getFtlToString("/common/XxxModel", data);
+      file = new FileData();
+      file.setName(upperFirst(table.getName()) + "Model.java");
+      file.setContent(code);
+      file.setPath(String.format(Feign_XxxMODEL_PATH, moduleName, basePackageName, moduleName));
+      files.add(file);
+
+      // 生成IController
+      data.put("primaryField", table.getPrimaryColumn());
+      data.put("primaryFieldType", table.getPrimaryType());
+      code = FreemarkerUtils.getFtlToString("/common/IXxxController", data);
+      file = new FileData();
+      file.setName("I" + upperFirst(table.getName()) + "Controller.java");
+      file.setContent(code);
+      file.setPath(String.format(Feign_IXxxController_PATH, moduleName, basePackageName, moduleName));
+      files.add(file);
+
+      // 生成Controller
+      data.put("primaryField", table.getPrimaryColumn());
+      data.put("primaryFieldType", table.getPrimaryType());
+      code = FreemarkerUtils.getFtlToString("/service/XxxController", data);
+      file = new FileData();
+      file.setName(upperFirst(table.getName()) + "Controller.java");
+      file.setContent(code);
+      file.setPath(String.format(Feign_XxxController_PATH, moduleName, basePackageName, moduleName));
+      files.add(file);
+
+      // 生成Client
+      code = FreemarkerUtils.getFtlToString("/client/XxxClient", data);
+      file = new FileData();
+      file.setName(upperFirst(table.getName()) + "Client.java");
+      file.setContent(code);
+      file.setPath(String.format(Feign_XxxClient_PATH, moduleName, basePackageName, moduleName));
+      files.add(file);
+
+      // 生成Service
+      code = FreemarkerUtils.getFtlToString("/service/IXxxService", data);
+      file = new FileData();
+      file.setName("I" + upperFirst(table.getName()) + "Service.java");
+      file.setContent(code);
+      file.setPath(String.format(Feign_IXxxService_PATH, moduleName, basePackageName, moduleName));
+      files.add(file);
+
+      // 生成ServiceImpl
+      data.put("primaryField", table.getPrimaryColumn());
+      code = FreemarkerUtils.getFtlToString("/service/XxxServiceImpl", data);
+      file = new FileData();
+      file.setName(upperFirst(table.getName()) + "ServiceImpl.java");
+      file.setContent(code);
+      file.setPath(String.format(Feign_XxxServiceImpl_PATH, moduleName, basePackageName, moduleName));
+      files.add(file);
+
+      // 生成Mapper
+      code = FreemarkerUtils.getFtlToString("/service/XxxMapper", data);
+      file = new FileData();
+      file.setName(upperFirst(table.getName()) + "Mapper.java");
+      file.setContent(code);
+      file.setPath(String.format(Feign_XxxMapper_PATH, moduleName, basePackageName, moduleName));
+      files.add(file);
+
+      // 生成mapper xml
+      data.put("tableName", table.getTableName());
+      data.put("fieldList", table.getColumnList());
+      data.put("primaryField", table.getPrimaryColumn());
+      data.put("primaryFieldType", table.getPrimaryType());
+      data.put("optimisticLock", table.isOptimisticLock());
+      code = FreemarkerUtils.getFtlToString("/service/xxx.xml", data);
+      file = new FileData();
+      file.setName(table.getName() + ".xml");
+      file.setContent(code);
+      file.setPath(String.format(Feign_XxxMapperXml_PATH, moduleName));
+      files.add(file);
+    }
+
+    return files;
+  }
+
+  private List<FileData> buildMvcCode(String moduleName, String basePackageName, Map data, List<FileData> files) throws Exception{
+    String code = null;
+    FileData file = null;
+    for (TableInfo table : tableInfos) {
+      data.put("comments", table.getComments());
+      data.put("modelName", table.getName());
+
+      // 生成Model
+      data.put("fieldList", removeSkipField(table.getColumnList()));
+      code = FreemarkerUtils.getFtlToString("/common/XxxModel", data);
+      file = new FileData();
+      file.setName(upperFirst(table.getName()) + "Model.java");
+      file.setContent(code);
+      file.setPath(String.format(mvc_XxxMODEL_PATH, moduleName, basePackageName, moduleName));
+      files.add(file);
+
+      // 生成Controller
+      data.put("primaryField", table.getPrimaryColumn());
+      data.put("primaryFieldType", table.getPrimaryType());
+      code = FreemarkerUtils.getFtlToString("/service/MvcController", data);
+      file = new FileData();
+      file.setName(upperFirst(table.getName()) + "Controller.java");
+      file.setContent(code);
+      file.setPath(String.format(mvc_MvcController_PATH, moduleName, basePackageName, moduleName));
+      files.add(file);
+
+      // 生成Service
+      code = FreemarkerUtils.getFtlToString("/service/IXxxService", data);
+      file = new FileData();
+      file.setName("I" + upperFirst(table.getName()) + "Service.java");
+      file.setContent(code);
+      file.setPath(String.format(mvc_IXxxService_PATH, moduleName, basePackageName, moduleName));
+      files.add(file);
+
+      // 生成ServiceImpl
+      data.put("primaryField", table.getPrimaryColumn());
+      code = FreemarkerUtils.getFtlToString("/service/XxxServiceImpl", data);
+      file = new FileData();
+      file.setName(upperFirst(table.getName()) + "ServiceImpl.java");
+      file.setContent(code);
+      file.setPath(String.format(mvc_XxxServiceImpl_PATH, moduleName, basePackageName, moduleName));
+      files.add(file);
+
+      // 生成Mapper
+      code = FreemarkerUtils.getFtlToString("/service/XxxMapper", data);
+      file = new FileData();
+      file.setName(upperFirst(table.getName()) + "Mapper.java");
+      file.setContent(code);
+      file.setPath(String.format(mvc_XxxMapper_PATH, moduleName, basePackageName, moduleName));
+      files.add(file);
+
+      // 生成mapper xml
+      data.put("tableName", table.getTableName());
+      data.put("fieldList", table.getColumnList());
+      data.put("primaryField", table.getPrimaryColumn());
+      data.put("primaryFieldType", table.getPrimaryType());
+      data.put("optimisticLock", table.isOptimisticLock());
+      code = FreemarkerUtils.getFtlToString("/service/xxx.xml", data);
+      file = new FileData();
+      file.setName(table.getName() + ".xml");
+      file.setContent(code);
+      file.setPath(String.format(mvc_XxxMapperXml_PATH, moduleName));
+      files.add(file);
+    }
+
+    return files;
   }
 
   private CodeGenerator tableInfo(List<String> tables) throws SQLException, ClassNotFoundException {
@@ -461,12 +533,21 @@ public class CodeGenerator {
    */
   private Set<String> skipField = new HashSet<String>();
 
-  private static final String XxxMODEL_PATH = "%s%s-common/src/main/java/%s/%s/common/model";
-  private static final String IXxxController_PATH = "%s%s-common/src/main/java/%s/%s/common/controller";
-  private static final String XxxClient_PATH = "%s%s-client-starter/src/main/java/%s/%s/client/api";
-  private static final String XxxController_PATH = "%s%s-service/src/main/java/%s/%s/controller";
-  private static final String IXxxService_PATH = "%s%s-service/src/main/java/%s/%s/service";
-  private static final String XxxServiceImpl_PATH = "%s%s-service/src/main/java/%s/%s/service/impl";
-  private static final String XxxMapper_PATH = "%s%s-service/src/main/java/%s/%s/mapper";
-  private static final String XxxMapperXml_PATH = "%s%s-service/src/main/resources/mybatis/mapper";
+  // Feign微服务代码模板
+  private static final String Feign_XxxMODEL_PATH = "%s-common/src/main/java/%s/%s/common/model";
+  private static final String Feign_IXxxController_PATH = "%s-common/src/main/java/%s/%s/common/controller";
+  private static final String Feign_XxxClient_PATH = "%s-client-starter/src/main/java/%s/%s/client/api";
+  private static final String Feign_XxxController_PATH = "%s-service/src/main/java/%s/%s/controller";
+  private static final String Feign_IXxxService_PATH = "%s-service/src/main/java/%s/%s/service";
+  private static final String Feign_XxxServiceImpl_PATH = "%s-service/src/main/java/%s/%s/service/impl";
+  private static final String Feign_XxxMapper_PATH = "%s-service/src/main/java/%s/%s/mapper";
+  private static final String Feign_XxxMapperXml_PATH = "%s-service/src/main/resources/mybatis/mapper";
+
+  // springMVC代码模板
+  private static final String mvc_XxxMODEL_PATH = "%s-common/src/main/java/%s/%s/common/model";
+  private static final String mvc_IXxxService_PATH = "%s-common/src/main/java/%s/%s/common/service";
+  private static final String mvc_MvcController_PATH = "%s-service/src/main/java/%s/%s/controller";
+  private static final String mvc_XxxServiceImpl_PATH = "%s-service/src/main/java/%s/%s/service/impl";
+  private static final String mvc_XxxMapper_PATH = "%s-service/src/main/java/%s/%s/mapper";
+  private static final String mvc_XxxMapperXml_PATH = "%s-service/src/main/resources/mybatis/mapper";
 }

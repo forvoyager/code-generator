@@ -7,14 +7,12 @@ package com.xr.code.generate.model;
  */
 public class CodeInfo {
 
-  // 项目名称
-  private String projectName;
+  // 代码类型
+  private String codeType;
   // 基础包名
   String basePackageName;
   // 模块名称
   private String moduleName;
-  // 模块名前缀
-  private String modulePrefix;
   // 作者
   private String author;
   // 时间
@@ -28,12 +26,12 @@ public class CodeInfo {
   // 表信息
   private TableInfo tableInfo;
 
-  public String getProjectName() {
-    return projectName;
+  public String getCodeType() {
+    return codeType;
   }
 
-  public CodeInfo setProjectName(String projectName) {
-    this.projectName = projectName;
+  public CodeInfo setCodeType(String codeType) {
+    this.codeType = codeType;
     return this;
   }
 
@@ -52,15 +50,6 @@ public class CodeInfo {
 
   public CodeInfo setModuleName(String moduleName) {
     this.moduleName = moduleName;
-    return this;
-  }
-
-  public String getModulePrefix() {
-    return modulePrefix;
-  }
-
-  public CodeInfo setModulePrefix(String modulePrefix) {
-    this.modulePrefix = modulePrefix;
     return this;
   }
 
