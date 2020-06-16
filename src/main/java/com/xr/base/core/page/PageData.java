@@ -29,7 +29,12 @@ public class PageData<T> implements Serializable {
   /**
    * 当前页（默认显示第1页）
    */
-  private int currentPage = 1;
+  private int pageNum = 1;
+
+  /**
+   * 每页显示条数，默认 10
+   */
+  private int pageSize = 10;
 
   /**
    * 下一页
@@ -51,10 +56,6 @@ public class PageData<T> implements Serializable {
    */
   private boolean isLastPage;
 
-  /**
-   * 每页显示条数，默认 10
-   */
-  private int pageSize = 10;
 
   /**
    * 查询数据列表
@@ -82,12 +83,20 @@ public class PageData<T> implements Serializable {
     this.totalPages = totalPages;
   }
 
-  public int getCurrentPage() {
-    return currentPage;
+  public int getPageNum() {
+    return pageNum;
   }
 
-  public void setCurrentPage(int currentPage) {
-    this.currentPage = currentPage;
+  public void setPageNum(int pageNum) {
+    this.pageNum = pageNum;
+  }
+
+  public int getPageSize() {
+    return pageSize;
+  }
+
+  public void setPageSize(int pageSize) {
+    this.pageSize = pageSize;
   }
 
   public int getNextPage() {
@@ -120,14 +129,6 @@ public class PageData<T> implements Serializable {
 
   public void setLastPage(boolean lastPage) {
     isLastPage = lastPage;
-  }
-
-  public int getPageSize() {
-    return pageSize;
-  }
-
-  public void setPageSize(int pageSize) {
-    this.pageSize = pageSize;
   }
 
   public List<T> getData() {

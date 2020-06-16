@@ -164,13 +164,13 @@ public interface IBaseService<T> extends IService {
 
   /**
    * 分页查询
-   * @param currentPage 第几页
+   * @param pageNum 第几页
    * @param pageSize 每页行数
    * @param condition 查询条件
    * @param cluster 主节点 or 从节点
    * @return 分页查询结果
    * @throws Exception
    */
-  PageData<T> selectPage(int currentPage, int pageSize, Map<String, Object> condition, Cluster cluster) throws Exception;
+  PageData<T> selectPage(int pageNum, int pageSize, Map<String, Object> condition, Cluster cluster) throws Exception;
 
 }

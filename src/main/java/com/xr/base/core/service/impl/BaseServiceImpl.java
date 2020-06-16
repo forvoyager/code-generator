@@ -192,10 +192,10 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
 
   @Transactional(propagation = Propagation.SUPPORTS)
   @Override
-  public PageData<T> selectPage(int currentPage, int pageSize, Map<String, Object> condition, Cluster cluster) throws Exception {
+  public PageData<T> selectPage(int pageNum, int pageSize, Map<String, Object> condition, Cluster cluster) throws Exception {
 
     // 默认返回第1页
-    currentPage = currentPage < 1 ? 1 : currentPage;
+    pageNum = pageNum < 1 ? 1 : pageNum;
 
     // 默认每页10条
     pageSize = pageSize < 1 ? 10 : pageSize;
@@ -205,19 +205,19 @@ public abstract class BaseServiceImpl<M extends IBaseMapper<T>, T> implements IB
     }
 
     if(condition.containsKey("orderBy")){
-      PageHelper.startPage(currentPage, pageSize, condition.get("orderBy").toString());
+      PageHelper.startPage(pageNum, pageSize, condition.get("orderBy").toString());
     } else {
-      PageHelper.startPage(currentPage, pageSize);
+      PageHelper.startPage(pageNum, pageSize);
     }
 
     List<T> dataList = this.selectList(condition, cluster);
     PageInfo pageInfo = new PageInfo(dataList);
 
     PageData<T> pageData = new PageData<T>();
-    pageData.setCurrentPage(currentPage);
+    pageData.setPageNum(pageInfo.getPageNum());
+    pageData.setPageSize(pageInfo.getPageSize());
     pageData.setNextPage(pageInfo.getNextPage());
     pageData.setPrePage(pageInfo.getPrePage());
-    pageData.setPageSize(pageSize);
     pageData.setTotalRecords(pageInfo.getTotal());
     pageData.setTotalPages(pageInfo.getPages());
     pageData.setData(dataList);
