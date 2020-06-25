@@ -1,13 +1,13 @@
 package ${basePackageName}.${moduleName}.controller;
 
-import ${basePackageName}.${moduleName}.common.controller.I${modelName?cap_first}Controller;
 import ${basePackageName}.${moduleName}.common.model.${modelName?cap_first}Model;
-import ${basePackageName}.${moduleName}.service.I${modelName?cap_first}Service;
+import ${basePackageName}.${moduleName}.common.service.I${modelName?cap_first}Service;
 import com.xr.base.core.dto.ResultDto;
 import com.xr.base.core.enums.Cluster;
 import com.xr.base.core.page.PageData;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -37,7 +37,8 @@ public class ${modelName?cap_first}Controller {
    */
   @RequestMapping("/${modelName}/insert")
   public ResultDto insert(@RequestBody ${modelName?cap_first}Model entity) throws Exception {
-    return ResultDto.success(${modelName}Service.insert(entity));
+    ${modelName}Service.insert(entity);
+    return ResultDto.success();
   }
 
   /**
@@ -50,7 +51,8 @@ public class ${modelName?cap_first}Controller {
    */
   @RequestMapping("/${modelName}/insert/batch")
   public ResultDto<Integer> insertBatch(@RequestBody List<${modelName?cap_first}Model> entityList) throws Exception {
-    return ResultDto.successData(${modelName}Service.insertBatch(entityList));
+    ${modelName}Service.insertBatch(entityList);
+    return ResultDto.success();
   }
 
   /**
@@ -63,7 +65,8 @@ public class ${modelName?cap_first}Controller {
    */
   @RequestMapping("/${modelName}/upsert")
   public ResultDto<${modelName?cap_first}Model> upsert(@RequestBody ${modelName?cap_first}Model entity) throws Exception {
-    return ResultDto.successData(${modelName}Service.upsert(entity));
+    ${modelName}Service.upsert(entity);
+    return ResultDto.success();
   }
 
   /**
@@ -71,7 +74,7 @@ public class ${modelName?cap_first}Controller {
    * 根据 主键ID 删除
    * </p>
    *
-   * @param 主键ID
+   * @param ${primaryField} 主键ID
    * @return 删除的行数
    */
   @RequestMapping("/${modelName}/delete/{${primaryField}}")
@@ -89,7 +92,7 @@ public class ${modelName?cap_first}Controller {
    */
   @RequestMapping("/${modelName}/delete")
   public ResultDto<Long> delete(@RequestBody Map<String, Object> condition) throws Exception {
-    return ResultDto.successData(${modelName}Service.deleteById(${primaryField}));
+    return ResultDto.successData(${modelName}Service.delete(condition));
   }
 
   /**
@@ -115,7 +118,7 @@ public class ${modelName?cap_first}Controller {
    */
   @RequestMapping("/${modelName}/update/map")
   public ResultDto<Long> updateByMap(@RequestBody Map<String, Object> columnMap) throws Exception {
-    return ResultDto.successData(${modelName}Service.updateByMap(condition));
+    return ResultDto.successData(${modelName}Service.update(columnMap));
   }
 
   /**

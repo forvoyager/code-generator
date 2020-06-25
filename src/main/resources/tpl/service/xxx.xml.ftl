@@ -109,13 +109,11 @@
 
   <!-- 查询记录 -->
   <select id="selectList" parameterType="map" resultType="${basePackageName}.${moduleName}.common.model.${modelName?cap_first}Model">
-    <include refid="global.pageStart"/>
     <![CDATA[ SELECT ]]>
     <include refid="Base_Column_List"/>
     <![CDATA[ FROM ${tableName} t ]]>
     <include refid="Where_Sql"/>
     <include refid="global.globalSort"/>
-    <include refid="global.pageEnd"/>
   </select>
 
 </mapper>
