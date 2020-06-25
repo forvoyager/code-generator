@@ -1,7 +1,7 @@
 package ${basePackageName}.${moduleName}.service.impl;
 
 import ${basePackageName}.${moduleName}.common.model.${modelName?cap_first}Model;
-import ${basePackageName}.${moduleName}.service.I${modelName?cap_first}Service;
+import ${basePackageName}.${moduleName}.common.service.I${modelName?cap_first}Service;
 import ${basePackageName}.${moduleName}.mapper.${modelName?cap_first}Mapper;
 import com.xr.base.jdbc.service.impl.BaseServiceImpl;
 import org.springframework.stereotype.Service;

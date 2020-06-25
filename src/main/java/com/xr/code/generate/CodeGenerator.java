@@ -36,26 +36,27 @@ public class CodeGenerator {
     String codeType = "mvc";
 
     // 基础包名
-    String basePackageName = "com.demo";
+    String basePackageName = "com.etl";
     // 模块名称
-    String moduleName = "account";
+    String moduleName = "user";
     // 作者
-    String author = "yang.changyan@foundbyte.com";
+    String author = "forvoyager@outlook.com";
     // 代码存放路径
-    String outputPath = "F:\\code";
+    String outputPath = "F:\\xR\\code";
 
     // 数据库配置
-    String url = "jdbc:mysql://10.10.11.105:3306/msgcptn_center?characterEncoding=UTF-8";
+    String url = "jdbc:mysql://localhost:3306/www_etl_com?characterEncoding=UTF-8";
     String driver = "com.mysql.jdbc.Driver";
-    String username = "root";
-    String password = "ey4nGsVL";
+    String username = "etl_admin";
+    String password = "123456";
     // 需要去掉的表前缀
-    String skipTablePrefix = "st_";
+    String skipTablePrefix = "etl_";
 
     // 需要生成代码的表Map<tableName, comment>
     List<String> tables = new ArrayList<String>();
-    tables.add("st_message");
-    tables.add("st_message_content");
+    tables.add("etl_user");
+    tables.add("etl_user_account");
+    tables.add("etl_user_account_data");
 
 //    // 基础包名
 //    String basePackageName = "com.xr";
