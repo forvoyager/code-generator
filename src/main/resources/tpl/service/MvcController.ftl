@@ -187,7 +187,7 @@ public class ${modelName?cap_first}Controller {
    * @return long 记录数
    */
   @RequestMapping("/${modelName}/select/{master}/count")
-  public ResultDto<Long> selectCount(@RequestBody Map<String, Object> condition, @PathVariable("master") Cluster master) throws Exception {
+  public ResultDto<Long> selectCount(@RequestBody(required = false) Map<String, Object> condition, @PathVariable("master") Cluster master) throws Exception {
     return ResultDto.successData(${modelName}Service.selectCount(condition, master));
   }
 
@@ -203,7 +203,7 @@ public class ${modelName?cap_first}Controller {
    * @return
    */
   @RequestMapping("/${modelName}/select/{master}/page/{page}/{size}")
-  public ResultDto<PageData<${modelName?cap_first}Model>> selectPage(@PathVariable("page") int page, @PathVariable("size") int size, @RequestBody Map<String, Object> condition, @PathVariable("master") Cluster master) throws Exception {
+  public ResultDto<PageData<${modelName?cap_first}Model>> selectPage(@PathVariable("page") int page, @PathVariable("size") int size, @RequestBody(required = false) Map<String, Object> condition, @PathVariable("master") Cluster master) throws Exception {
     return ResultDto.successData(${modelName}Service.selectPage(page, size, condition, master));
   }
 
